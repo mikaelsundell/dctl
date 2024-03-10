@@ -57,14 +57,12 @@ __DEVICE__ LogC3Curve curve(int ei) {
 
 // log2lin
 __DEVICE__ float3 log2lin(float3 input_rgb, int ei) {
-
     LogC3Curve cv = curve(ei);
     return make_float3(cv.log2lin(input_rgb.x), cv.log2lin(input_rgb.y), cv.log2lin(input_rgb.z));
 }
 
 // lin2log
 __DEVICE__ float3 lin2log(float3 input_rgb, int ei) {
-
     LogC3Curve cv = curve(ei);
     return make_float3(cv.lin2log(input_rgb.x), cv.lin2log(input_rgb.y), cv.lin2log(input_rgb.z));
 }
