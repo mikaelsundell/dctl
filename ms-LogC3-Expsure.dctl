@@ -4,7 +4,8 @@
 
 // clang-format off
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
-DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -4.0, 4.0, 0.1)
+DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
+DEFINE_UI_PARAMS(falsecolors, LogC3 False colors, DCTLUI_CHECK_BOX, 0)
 
 // clang-format on
 struct LogC3Curve
@@ -57,14 +58,65 @@ __DEVICE__ LogC3Curve curve(int ei) {
 
 // log2lin
 __DEVICE__ float3 log2lin(float3 input_rgb, int ei) {
+
     LogC3Curve cv = curve(ei);
     return make_float3(cv.log2lin(input_rgb.x), cv.log2lin(input_rgb.y), cv.log2lin(input_rgb.z));
 }
 
 // lin2log
 __DEVICE__ float3 lin2log(float3 input_rgb, int ei) {
+
     LogC3Curve cv = curve(ei);
     return make_float3(cv.lin2log(input_rgb.x), cv.lin2log(input_rgb.y), cv.lin2log(input_rgb.z));
+}
+
+struct LogC3Color
+{
+    float stop;
+    float r;
+    float g;
+    float b;
+};
+
+// false color
+__DEVICE__ float3 falsecolor(float3 input_rgb, int ei) {
+
+    LogC3Color colors[] = {
+        {-8, 0.01f, 0.01f, 0.01f},
+        {-7, 0.05f, 0.05f, 0.05f},
+        {-6, 0.10f, 0.10f, 0.10f},
+        {-5, 0.40f, 0.25f, 0.60f},
+        {-4, 0.20f, 0.45f, 0.70f},
+        {-3, 0.40f, 0.60f, 0.95f},
+        {-2, 0.40f, 0.60f, 0.25f},
+        {-1, 0.60f, 0.90f, 0.55f},
+        {0,  0.50f, 0.50f, 0.50f},
+        {1,  1.00f, 0.95f, 0.55f},
+        {2,  0.90f, 0.50f, 0.25f},
+        {3,  0.90f, 0.60f, 0.25f},
+        {4,  0.90f, 0.30f, 0.20f},
+        {5,  0.90f, 0.35f, 0.30f},
+        {6,  0.90f, 0.90f, 0.90f},
+        {7,  0.95f, 0.95f, 0.95f},
+        {8,  0.99f, 0.99f, 0.99f}
+    };
+    LogC3Curve cv = curve(ei);  
+    unsigned long length = sizeof(colors) / sizeof(LogC3Color);
+    for (unsigned long i = 0; i < length; i++) {
+
+        float lin = pow(2.0f, colors[i].stop + 0.5f) * 0.18f;
+        float log = min(cv.lin2log(lin), 1.0f);
+        colors[i].stop = log;
+    }
+    float3 result = make_float3(0.0f, 0.0f, 0.0f);
+    float lum = 0.2126 * input_rgb.x + 0.7152 * input_rgb.y + 0.0722 * input_rgb.z;
+    for (unsigned long i = 0; i < length; i++) {
+        if (lum <= colors[i].stop || i == (sizeof(colors) / sizeof(LogC3Color)) - 1) {
+            result = make_float3(colors[i].r, colors[i].g, colors[i].b);
+            break;
+        }
+    }
+    return result; 
 }
 
 // transform
@@ -72,5 +124,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
     float3 result = lin2log(log2lin(rgb, ei) * pow(2.0, exposure), ei);
+    if (falsecolors > 0) {
+        result = falsecolor(result, ei);
+    }
     return result;
 }
