@@ -48,7 +48,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     if (r == 0 && g == 0 && b == 0) {
         ratio = make_float3(0.0f, 0.0f, 0.0f);
     } else {
-        ratio = make_float3(p_R / lum, p_G / lum, p_B / lum);
+        ratio = make_float3(r / lum, g / lum, b / lum);
     }
     // result
     float3 res = adjustedlum * ratio;
