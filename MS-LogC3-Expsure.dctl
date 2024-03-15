@@ -1,4 +1,4 @@
-// Copyright 2022-present Contributors to the colorpicker project.
+// Copyright 2024-present Contributors to the colorpicker project.
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/davinci
 
@@ -80,7 +80,6 @@ struct LogC3Color
 
 // false color
 __DEVICE__ float3 falsecolor(float3 input_rgb, int ei) {
-
     LogC3Color colors[] = {
         {-8, 0.01f, 0.01f, 0.01f},
         {-7, 0.05f, 0.05f, 0.05f},
