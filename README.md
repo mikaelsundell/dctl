@@ -26,7 +26,7 @@ Table of Contents
 Introduction
 ---------
 
-This collection consists of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a photographic approach to color correction and grading.
+A collection of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a photographic approach to color correction and grading.
   
 Installation and utils
 ---------
