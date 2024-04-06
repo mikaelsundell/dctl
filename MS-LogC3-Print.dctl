@@ -1,73 +1,66 @@
-// Copyright 2024-present Contributors to the colorpicker project.
+// Copyright 2022-present Contributors to the colorpicker project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/mikaelsundell/davinci
+// https://github.com/mikaelsundell/logc3-dctl
 
 // clang-format off
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600});
 DEFINE_UI_PARAMS(contrastlut, Film contrast, DCTLUI_COMBO_BOX, 0, {CONTRASTLUT0, CONTRASTLUT1, CONTRASTLUT2, CONTRASTLUT3, CONTRASTLUT4, CONTRASTLUT5}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65});
 DEFINE_UI_PARAMS(cubelut, Film cube, DCTLUI_COMBO_BOX, 0, {CUBELUT0, CUBELUT1, CUBELUT2, CUBELUT3, CUBELUT4, CUBELUT5}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65});
 DEFINE_UI_PARAMS(contraststrength, Contrast strength, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
-DEFINE_UI_PARAMS(splittonestrength, Split tone strength, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(cubestrength, Colors strength, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 
 // luts
-DEFINE_LUT(Lut0, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
-DEFINE_LUT(Lut1, ../Film Looks/Rec709 Fujifilm 3513DI D60.cube)
-DEFINE_LUT(Lut2, ../Film Looks/Rec709 Fujifilm 3513DI D65.cube)
-DEFINE_LUT(Lut3, ../Film Looks/Rec709 Kodak 2383 D55.cube)
-DEFINE_LUT(Lut4, ../Film Looks/Rec709 Kodak 2383 D60.cube)
-DEFINE_LUT(Lut5, ../Film Looks/Rec709 Kodak 2383 D65.cube)
+DEFINE_LUT(LUT0, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
+DEFINE_LUT(LUT1, ../Film Looks/Rec709 Fujifilm 3513DI D60.cube)
+DEFINE_LUT(LUT2, ../Film Looks/Rec709 Fujifilm 3513DI D65.cube)
+DEFINE_LUT(LUT3, ../Film Looks/Rec709 Kodak 2383 D55.cube)
+DEFINE_LUT(LUT4, ../Film Looks/Rec709 Kodak 2383 D60.cube)
+DEFINE_LUT(LUT5, ../Film Looks/Rec709 Kodak 2383 D65.cube)
+
+// headers
+#include "MS-LogC3.h"
+#include "MS-Utils.h"
 
 // transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
-    float r = p_R;
-    float g = p_G;
-    float b = p_B;
-    float lum = 0.2126 * r+ 0.7152 * g + 0.0722 * b;
-    // contrast lut
-    float3 ctc;
-    if (contrastlut == CUBELUT0) {    
-        ctc = APPLY_LUT(lum, lum, lum, Lut0);
-    } else if (contrastlut == CUBELUT1) {
-        ctc = APPLY_LUT(lum, lum, lum, Lut1);
-    } else if (contrastlut == CUBELUT2) {
-        ctc = APPLY_LUT(lum, lum, lum, Lut2);
-    } else if (contrastlut == CUBELUT3) {
-        ctc = APPLY_LUT(lum, lum, lum, Lut3);
-    } else if (contrastlut == CUBELUT4) {
-        ctc = APPLY_LUT(lum, lum, lum, Lut4);
-    } else if (contrastlut == CUBELUT5) {
-        ctc = APPLY_LUT(lum, lum, lum, Lut5);
-    }
-    float ctl = 0.2126 * ctc.x + 0.7152 * ctc.y + 0.0722 * ctc.z;
-    float adjustedlum = mix(lum, ctl, contraststrength / 100.0);
-    // result
-    float3 ratio;
-    if (r == 0 && g == 0 && b == 0) {
-        ratio = make_float3(0.0f, 0.0f, 0.0f);
-    } else {
-        ratio = make_float3(r / lum, g / lum, b / lum);
-    }
-    // result
-    float3 res = adjustedlum * ratio;
-    // cube color
-    float3 cc;
+    float3 rgb = make_float3(p_R, p_G, p_B);
+
+    float3 contrast;
     if (cubelut == CUBELUT0) {    
-        cc = APPLY_LUT(r, g, b, Lut0);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0);
     } else if (cubelut == CUBELUT1) {
-        cc = APPLY_LUT(r, g, b, Lut1);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1);
     } else if (cubelut == CUBELUT2) {
-        cc = APPLY_LUT(r, g, b, Lut2);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2);
     } else if (cubelut == CUBELUT3) {
-        cc = APPLY_LUT(r, g, b, Lut3);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3);
     } else if (cubelut == CUBELUT4) {
-        cc = APPLY_LUT(r, g, b, Lut4);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4);
     } else if (cubelut == CUBELUT5) {
-        cc = APPLY_LUT(r, g, b, Lut5);
+        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5);
     }
-    float cc_lum = 0.2126 * cc.x + 0.7152 * cc.y + 0.0722 * cc.z;
-    float3 cc_color = cc / cc_lum;
-    res = mix(res, res * cc_color, cubestrength / 100.0);
-    return res;
+    float3 result = set_grayscale(contrast.x, contrast.y, contrast.z, grayscale(rgb.x, rgb.y, rgb.z) );
+    rgb = mix(rgb, result, cubestrength / 100.0);
+
+    float3 color;
+    float ctgs = grayscale(rgb.x, rgb.y, rgb.z);
+    if (contrastlut == CONTRASTLUT0) {    
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT0);
+    } else if (contrastlut == CONTRASTLUT1) {
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT1);
+    } else if (contrastlut == CONTRASTLUT2) {
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT2);
+    } else if (contrastlut == CONTRASTLUT3) {
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT3);
+    } else if (contrastlut == CONTRASTLUT4) {
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT4);
+    } else if (contrastlut == CONTRASTLUT5) {
+        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT5);
+    }
+    float clgs = grayscale(color.x, color.y, color.z);
+    float gs = mix(ctgs, clgs, contraststrength / 100.0);
+    
+    rgb = set_grayscale(rgb.x, rgb.y, rgb.z, gs);
+    return rgb; 
 }

@@ -1,0 +1,25 @@
+// Copyright 2024-present Contributors to the colorpicker project.
+// SPDX-License-Identifier: BSD-3-Clause
+// https://github.com/mikaelsundell/davinci
+
+// clang-format off
+DEFINE_UI_PARAMS(saturation, Saturation, DCTLUI_SLIDER_FLOAT, 50, 0, 100, 1);
+
+// headers
+#include "MS-Utils.h"
+
+// transform
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
+{
+    float3 rgb = make_float3(p_R, p_G, p_B);
+    float3 hsv = rgb_hsv(rgb);
+    float factor;
+    if (saturation <= 50) {
+        factor = saturation / 50.0f;
+    } else {
+        factor = 1.0f + ((saturation - 50.0f) / 50.0f);
+    }
+    hsv.y = min(hsv.y * factor, 1.0f);
+    float3 res = hsv_rgb(hsv);
+    return res;
+}

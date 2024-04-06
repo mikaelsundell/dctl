@@ -1,74 +1,16 @@
-// Copyright 2024-present Contributors to the colorpicker project.
+// Copyright 2022-present Contributors to the colorpicker project.
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/davinci
 
 // clang-format off
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
 DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
+DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
 DEFINE_UI_PARAMS(falsecolors, LogC3 False colors, DCTLUI_CHECK_BOX, 0)
 
-// clang-format on
-struct LogC3Curve
-{
-    int ei;
-    float cut;
-    float a;
-    float b;
-    float c;
-    float d;
-    float e;
-    float f;
-    float lin2log(float lin)
-    {
-        return ((lin > cut) ? c * log10(a * lin + b) + d : e * lin + f);
-    }
-    float log2lin(float log)
-    {
-        return ((log > e * cut + f) ? (pow(10, (log - d) / c) - b) / a : (log - f) / e);
-    }
-};
-
-__DEVICE__ LogC3Curve curve(int ei) {
-    LogC3Curve curve;
-    if (ei == EI160) {
-        curve = { 160,  0.005561, 5.555556, 0.080216, 0.269036, 0.381991, 5.842037, 0.092778 };
-    } else if (ei == EI200) {
-        curve = { 200,  0.006208, 5.555556, 0.076621, 0.266007, 0.382478, 5.776265, 0.092782 };
-    } else if (ei == EI250) {
-        curve = { 250,  0.006871, 5.555556, 0.072941, 0.262978, 0.382966, 5.710494, 0.092786 };
-    } else if (ei == EI320) {
-        curve = { 320,  0.007622, 5.555556, 0.068768, 0.259627, 0.383508, 5.637732, 0.092791 };
-    } else if (ei == EI400) {
-        curve = { 400,  0.008318, 5.555556, 0.064901, 0.256598, 0.383999, 5.571960, 0.092795 };
-    } else if (ei == EI500) {
-        curve = { 500,  0.009031, 5.555556, 0.060939, 0.253569, 0.384493, 5.506188, 0.092800 };
-    } else if (ei == EI640) {
-        curve = { 640,  0.009840, 5.555556, 0.056443, 0.250219, 0.385040, 5.433426, 0.092805 };
-    } else if (ei == EI800) {
-        curve = { 800,  0.010591, 5.555556, 0.052272, 0.247190, 0.385537, 5.367655, 0.092809 };
-    } else if (ei == EI1000) {
-        curve = { 1000, 0.011361, 5.555556, 0.047996, 0.244161, 0.386036, 5.301883, 0.092814 };
-    } else if (ei == EI1280) {
-        curve = { 1280, 0.012235, 5.555556, 0.043137, 0.240810, 0.386590, 5.229121, 0.092819 };
-    } else if (ei == EI1600) {
-        curve = { 1600, 0.013047, 5.555556, 0.038625, 0.237781, 0.387093, 5.163350, 0.092824 };
-    }
-    return curve;
-}
-
-// log2lin
-__DEVICE__ float3 log2lin(float3 input_rgb, int ei) {
-
-    LogC3Curve cv = curve(ei);
-    return make_float3(cv.log2lin(input_rgb.x), cv.log2lin(input_rgb.y), cv.log2lin(input_rgb.z));
-}
-
-// lin2log
-__DEVICE__ float3 lin2log(float3 input_rgb, int ei) {
-
-    LogC3Curve cv = curve(ei);
-    return make_float3(cv.lin2log(input_rgb.x), cv.lin2log(input_rgb.y), cv.lin2log(input_rgb.z));
-}
+// headers
+#include "MS-LogC3.h"
+#include "MS-Utils.h"
 
 struct LogC3Color
 {
@@ -78,8 +20,29 @@ struct LogC3Color
     float b;
 };
 
+// ev stops
+__DEVICE__ float evstops(int ev) {
+    if (ev == EV_3) {
+        return -3.0f;
+    } else if (ev == EV_2) {
+        return -2.0f;
+    } else if (ev == EV_1) {
+        return -1.0f;
+    } else if (ev == EV0) {
+        return 0.0f;
+    } else if (ev == EV1) {
+        return 1.0f;
+    } else if (ev == EV2) {
+        return 2.0f;
+    } else if (ev == EV3) {
+        return 3.0f;
+    }
+    return 0.0;
+}
+
 // false color
-__DEVICE__ float3 falsecolor(float3 input_rgb, int ei) {
+__DEVICE__ float3 falsecolor(float3 input_rgb, int ei, int ev) {
+
     LogC3Color colors[] = {
         {-8, 0.01f, 0.01f, 0.01f},
         {-7, 0.05f, 0.05f, 0.05f},
@@ -99,16 +62,19 @@ __DEVICE__ float3 falsecolor(float3 input_rgb, int ei) {
         {7,  0.95f, 0.95f, 0.95f},
         {8,  0.99f, 0.99f, 0.99f}
     };
-    LogC3Curve cv = curve(ei);  
+    LogC3Curve cv = curve(ei);
+    float evs = evstops(ev);  
     unsigned long length = sizeof(colors) / sizeof(LogC3Color);
     for (unsigned long i = 0; i < length; i++) {
 
-        float lin = pow(2.0f, colors[i].stop + 0.5f) * 0.18f;
-        float log = min(cv.lin2log(lin), 1.0f);
+        float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
+        float log = min(cv.lin_logC3(lin), 1.0f);
         colors[i].stop = log;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
-    float lum = 0.2126 * input_rgb.x + 0.7152 * input_rgb.y + 0.0722 * input_rgb.z;
+    float lum = luma(input_rgb);
+    //lum *= pow(2.0, evs); 
+
     for (unsigned long i = 0; i < length; i++) {
         if (lum <= colors[i].stop || i == (sizeof(colors) / sizeof(LogC3Color)) - 1) {
             result = make_float3(colors[i].r, colors[i].g, colors[i].b);
@@ -122,9 +88,9 @@ __DEVICE__ float3 falsecolor(float3 input_rgb, int ei) {
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    float3 result = lin2log(log2lin(rgb, ei) * pow(2.0, exposure), ei);
+    float3 result = lin_logC3(logC3_lin(rgb, ei) * pow(2.0, exposure), ei);
     if (falsecolors > 0) {
-        result = falsecolor(result, ei);
+        result = falsecolor(result, ei, ev);
     }
     return result;
 }
