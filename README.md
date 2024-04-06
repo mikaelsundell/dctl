@@ -15,6 +15,8 @@ Table of Contents
   - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
   - [MS-Saturation](#ms-saturation)
   - [DCTLs from other projects](#dctls-from-other-projects)
+    - [Film Grain.dctl](#film-graindctl)
+    - [Printer Lights.dctl](#printer-lightsdctl)
     - [TetraInterp.dctl](#tetrainterpdctl)
     - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
   - [LogC3 EI800 reference chart](#logc3-ei800-reference-chart)
@@ -78,6 +80,14 @@ Made for print emulation, this DCTL applies DaVinci Resolve's built-in film look
 Focusing on HSV-based adjustments, this script provides a tool for fine-tuning saturation.
 
 ## DCTLs from other projects
+
+### Film Grain.dctl
+
+- https://github.com/thatcherfreeman/utility-dctls
+
+### Printer Lights.dctl
+
+- https://github.com/thatcherfreeman/utility-dctls
 
 ### TetraInterp.dctl
 
