@@ -4,103 +4,159 @@
 
 // clang-format on
 
-// LogC3Color
-struct LogC3Color
-{
-    float stop;
-    float r;
-    float g;
-    float b;
-};
+// matrix
+typedef struct {
+    float m00, m01, m02;
+    float m03, m04, m05;
+    float m06, m07, m08;
+} Matrix;
 
-__CONSTANT__ LogC3Color logC3_colors[] = {
-    {-8, 0.01f, 0.01f, 0.01f},
-    {-7, 0.05f, 0.05f, 0.05f},
-    {-6, 0.10f, 0.10f, 0.10f},
-    {-5, 0.40f, 0.25f, 0.60f},
-    {-4, 0.20f, 0.45f, 0.70f},
-    {-3, 0.40f, 0.60f, 0.95f},
-    {-2, 0.40f, 0.60f, 0.25f},
-    {-1, 0.60f, 0.90f, 0.55f},
-    {0,  0.50f, 0.50f, 0.50f},
-    {1,  1.00f, 0.95f, 0.25f},
-    {2,  0.90f, 0.50f, 0.25f},
-    {3,  0.90f, 0.60f, 0.25f},
-    {4,  0.90f, 0.30f, 0.20f},
-    {5,  0.90f, 0.35f, 0.30f},
-    {6,  0.90f, 0.90f, 0.90f},
-    {7,  0.95f, 0.95f, 0.95f},
-    {8,  0.99f, 0.99f, 0.99f}
-};
-#define logC3_stops 17
-
-// LogC3 curve
-struct LogC3Curve
-{
-    int ei;
-    float cut;
-    float a;
-    float b;
-    float c;
-    float d;
-    float e;
-    float f;
-    float lin_logC3(float lin) {
-        return ((lin > cut) ? c * log10(a * lin + b) + d : e * lin + f);
-    }
-    float logC3_lin(float log) {
-        return ((log > e * cut + f) ? (pow(10, (log - d) / c) - b) / a : (log - f) / e);
-    }
-};
-
-__DEVICE__ LogC3Curve logC3_curve(int ei) {
-    LogC3Curve curve;
-    if (ei == EI160) {
-        curve = { 160,  0.005561, 5.555556, 0.080216, 0.269036, 0.381991, 5.842037, 0.092778 };
-    } else if (ei == EI200) {
-        curve = { 200,  0.006208, 5.555556, 0.076621, 0.266007, 0.382478, 5.776265, 0.092782 };
-    } else if (ei == EI250) {
-        curve = { 250,  0.006871, 5.555556, 0.072941, 0.262978, 0.382966, 5.710494, 0.092786 };
-    } else if (ei == EI320) {
-        curve = { 320,  0.007622, 5.555556, 0.068768, 0.259627, 0.383508, 5.637732, 0.092791 };
-    } else if (ei == EI400) {
-        curve = { 400,  0.008318, 5.555556, 0.064901, 0.256598, 0.383999, 5.571960, 0.092795 };
-    } else if (ei == EI500) {
-        curve = { 500,  0.009031, 5.555556, 0.060939, 0.253569, 0.384493, 5.506188, 0.092800 };
-    } else if (ei == EI640) {
-        curve = { 640,  0.009840, 5.555556, 0.056443, 0.250219, 0.385040, 5.433426, 0.092805 };
-    } else if (ei == EI800) {
-        curve = { 800,  0.010591, 5.555556, 0.052272, 0.247190, 0.385537, 5.367655, 0.092809 };
-    } else if (ei == EI1000) {
-        curve = { 1000, 0.011361, 5.555556, 0.047996, 0.244161, 0.386036, 5.301883, 0.092814 };
-    } else if (ei == EI1280) {
-        curve = { 1280, 0.012235, 5.555556, 0.043137, 0.240810, 0.386590, 5.229121, 0.092819 };
-    } else if (ei == EI1600) {
-        curve = { 1600, 0.013047, 5.555556, 0.038625, 0.237781, 0.387093, 5.163350, 0.092824 };
-    }
-    return curve;
+// Multiply float3 by matrix
+__DEVICE__ float3 multiply_matrix(float3 value, Matrix mat) {
+    float3 result = make_float3(
+        mat.m00 * value.x + mat.m01 * value.y + mat.m02 * value.z,
+        mat.m03 * value.x + mat.m04 * value.y + mat.m05 * value.z,
+        mat.m06 * value.x + mat.m07 * value.y + mat.m08 * value.z
+    );
+    return result;
 }
 
-// Convert LogC3 to linear
-__DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
+// Convert HSV to RGB
+__DEVICE__ float3 hsv_rgb(float3 hsv) {
+    float hue = hsv.x;
+    float sat = hsv.y;
+    float val = hsv.z;
 
-    LogC3Curve cv = logC3_curve(ei);
-    return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
+    hue = _fmod(hue + 360.0, 360.0);
+
+    float c = val * sat;
+    float x = c * (1.0 - _fabs(_fmod(hue / 60.0, 2.0) - 1.0));
+    float m = val - c;
+    float3 rgbp = make_float3(0.0, 0.0, 0.0);
+    if (0.0 <= hue && hue < 60.0) {
+        rgbp = make_float3(c, x, 0.0);
+    } else if (60.0 <= hue && hue < 120.0) {
+        rgbp = make_float3(x, c, 0.0);
+    } else if (120.0 <= hue && hue < 180.0) {
+        rgbp = make_float3(0.0, c, x);
+    } else if (180.0 <= hue && hue < 240.0) {
+        rgbp = make_float3(0.0, x, c);
+    } else if (240.0 <= hue && hue < 300.0) {
+        rgbp = make_float3(x, 0.0, c);
+    } else if (300.0 < hue && hue < 360.0) {
+        rgbp = make_float3(c, 0.0, x);
+    }
+    return rgbp + m;
 }
 
-// Convert linear to LogC3
-__DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
+// Convert RGB to HSV
+__DEVICE__ float3 rgb_hsv(float3 rgb) {
+    float r = rgb.x;
+    float g = rgb.y;
+    float b = rgb.z;
+    float c_max = _fmaxf(_fmaxf(r, g), b);
+    float c_min = _fminf(_fminf(r, g), b);
+    float delta = c_max - c_min;
 
-    LogC3Curve cv = logC3_curve(ei);
-    return make_float3(cv.lin_logC3(rgb.x), cv.lin_logC3(rgb.y), cv.lin_logC3(rgb.z));
+    float H;
+    if (delta == 0.0f) {
+        H = 0.0f;
+    } else if (r >= g && r >= b) {
+        H = _fmod((g - b) / delta + 6.0f, (6.0f));
+    } else if (g >= r && g >= b) {
+        H = (b - r) / delta + (2.0f);
+    } else {
+        // b >= r && b >= g
+        H = (r - g) / delta + 4.0f;
+    }
+    H = H / 6.0f;
+    float S;
+    if (c_max == 0.0f) {
+        S = 0.0f;
+    } else {
+        S = delta / c_max;
+    }
+    float V = c_max;
+    float3 color = make_float3(H * 360.0, S, V);
+    return color;
 }
 
-// Convert linear to Cineon
-__DEVICE__ float3 lin_cineon(float3 rgb) {
-    float normalizedRefBlack = 95.0 / 1023.0;
-    float normalizedRefWhite = 685.0 / 1023.0;
-    float gain = 1.0 - pow(10.0, (normalizedRefBlack - normalizedRefWhite) * 0.003333333333);
-    // cineon log conversion
-    rgb = (log(max((rgb - normalizedRefBlack) * gain, 0.0) + 1.0) / 7.85181516711) + normalizedRefWhite;
+// Convert HSL to RGB
+__DEVICE__ float3 hsl_rgb(float3 hsl) {
+    float h = hsl.x / 360.0f; // Convert h to [0, 1] range
+    float s = hsl.y;
+    float l = hsl.z;
+
+    float c = (1.0f - _fabs(2.0f * l - 1.0f)) * s;
+    float x = c * (1.0f - _fabs(_fmod(h * 6.0f, 2.0f) - 1.0f));
+    float m = l - c / 2.0f;
+    float3 rgb = make_float3(0.0f, 0.0f, 0.0f);
+
+    if (0.0f <= h && h < 1.0f/6.0f) {
+        rgb = make_float3(c, x, 0.0f);
+    } else if (1.0f/6.0f <= h && h < 2.0f/6.0f) {
+        rgb = make_float3(x, c, 0.0f);
+    } else if (2.0f/6.0f <= h && h < 3.0f/6.0f) {
+        rgb = make_float3(0.0f, c, x);
+    } else if (3.0f/6.0f <= h && h < 4.0f/6.0f) {
+        rgb = make_float3(0.0f, x, c);
+    } else if (4.0f/6.0f <= h && h < 5.0f/6.0f) {
+        rgb = make_float3(x, 0.0f, c);
+    } else if (5.0f/6.0f <= h && h < 1.0f) {
+        rgb = make_float3(c, 0.0f, x);
+    }
+
+    rgb += m;
     return rgb;
+}
+
+// Convert RGB to HSL
+__DEVICE__ float3 rgb_hsl(float3 rgb) {
+    float r = rgb.x;
+    float g = rgb.y;
+    float b = rgb.z;
+    float max = _fmaxf(_fmaxf(r, g), b);
+    float min = _fminf(_fminf(r, g), b);
+    float h, s, l;
+    l = (max + min) / 2.0f;
+
+    float delta = max - min;
+
+    if (delta == 0) {
+        h = s = 0; // achromatic
+    } else {
+        s = l > 0.5f ? delta / (2.0f - max - min) : delta / (max + min);
+
+        if (max == r) {
+            h = (g - b) / delta + (g < b ? 6.0f : 0);
+        } else if (max == g) {
+            h = (b - r) / delta + 2.0f;
+        } else {
+            h = (r - g) / delta + 4.0f;
+        }
+        h /= 6.0f;
+    }
+    return make_float3(h * 360.0f, s, l); // H in [0, 360], S and L in [0, 1]
+}
+
+// Calculate grayscale from RGB
+__DEVICE__ float grayscale(float r, float g, float b)
+{ 
+    float grayscale = r * 0.30f + g * 0.59f + b * 0.11f;
+    return grayscale;
+}
+
+// Calculate grayscale from RGB
+__DEVICE__ float3 set_grayscale(float r, float g, float b, float l)
+{
+    float diff = l - grayscale(r, g, b);
+    float3 result = make_float3(r + diff, g + diff, b + diff);
+    return result;
+}
+
+// Calculate luma from RGB
+__DEVICE__ float luma(float3 rgb)
+{
+    float luma = 0.2126 * rgb.x + 0.7152 * rgb.y + 0.0722 * rgb.z;
+    return luma;
 }
