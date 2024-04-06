@@ -7,12 +7,12 @@ Readme for dctl
 Introduction
 ---------
 
-This collection consists of continuously updated DCTL (DaVinci Resolve Custom Tool) scripts, primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a gentle touch photographic approach to color correction and grading.
+This collection consists of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a photographic approach to color correction and grading.
   
 Installation and utils
 ---------
 
-To use these tools into your DaVinci Resolve setup, begin by cloning the git repository, which contains the DCTL scripts and utilities.
+To use these tools into your DaVinci Resolve setup, begin by cloning the git repository, which contains the DCTLs and headers.
 
 Run `./build.sh` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL`
 
