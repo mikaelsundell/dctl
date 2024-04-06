@@ -7,7 +7,7 @@ Readme for dctl
 Introduction
 ---------
 
-This collection consists of continuously updated DCTL (DaVinci Resolve Custom Tool) scripts, primarily aimed at enhancing workflows using ARRI LogC in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a gentle touch photographic approach to color correction and grading.
+This collection consists of continuously updated DCTL (DaVinci Resolve Custom Tool) scripts, primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These scripts are  designed for photographers and cinematographers seeking a gentle touch photographic approach to color correction and grading.
   
 Installation and utils
 ---------
@@ -49,13 +49,13 @@ Dctls
 
 ![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png 'MS-LogC3-Exposure')
 
-This script is crafted for precise exposure adjustments within LogC3 footage, incorporating a False Color feature to aid in achieving optimal exposure levels.
+This script is crafted for precise exposure adjustments within ARRI LogC3 footage, incorporating a false color to aid in achieving correct exposure levels.
 
 ## MS-LogC3-Print.dctl
 
-![MS-LogC3-Exposure figure](resources/MS-LogC3-Print.png 'S-LogC3-Exposure')
+![MS-LogC3-Exposure figure](resources/MS-LogC3-Print.png 'MS-LogC3-Exposure')
 
-Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to LogC3 footage with adjustable controls for contrast and color strength.
+Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
 ## MS-Saturation
 
@@ -71,7 +71,7 @@ TetraInterpHSV.dctl
 
 ## LogC3 EI800 reference chart
 
-The LogC3 reference chart is created using the logctool command:
+The LogC3 reference chart created using the logctool command:
 
 * https://github.com/mikaelsundell/logctool
 
