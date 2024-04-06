@@ -12,7 +12,7 @@ This collection consists of continuously updated DCTL (DaVinci Resolve Custom To
 Installation and utils
 ---------
 
-To incorporate these advanced tools into your DaVinci Resolve setup, begin by cloning the git repository, which houses the entire suite of DCTL projects.
+To use these tools into your DaVinci Resolve setup, begin by cloning the git repository, which contains the DCTL scripts and utilities.
 
 Run `./build.sh` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL`
 
@@ -55,12 +55,11 @@ This script is crafted for precise exposure adjustments within LogC3 footage, in
 
 ![MS-LogC3-Exposure figure](resources/MS-LogC3-Print.png 'S-LogC3-Exposure')
 
-Tailored for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to LogC3 footage, facilitating a classic filmic aesthetic with the convenience of digital workflows.
+Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to LogC3 footage with adjustable controls for contrast and color strength.
 
 ## MS-Saturation
 
-Focusing on HSV-based adjustments, this script provides a sophisticated tool for fine-tuning saturation, offering enhanced control over the vibrancy and intensity of colors within your footage.
-
+Focusing on HSV-based adjustments, this script provides a tool for fine-tuning saturation.
 
 ## DCTLs from other projects ##
 
@@ -80,7 +79,6 @@ ARRI LogC3 EI800 EXR:
 
 * [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr)
 
-  
 Documentation
 ---------
 
@@ -89,7 +87,6 @@ Blend modes, used in MS-LogC3-Print.dctl
 
 Grayscale legacy luma 
 * https://en.wikipedia.org/wiki/Grayscale
-
 
 
  Web Resources
