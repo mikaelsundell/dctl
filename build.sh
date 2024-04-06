@@ -12,7 +12,7 @@ if [ ! -d "$dctl_dir" ]; then
 fi
 
 echo "Copying .dctl and .h files to $dctl_dir"
-cp "$script_dir"/*.dctl "$dctl_dir"
-cp "$script_dir"/*.h "$dctl_dir"
+cp -v "$script_dir"/*.dctl "$dctl_dir"
+cp -v "$script_dir"/*.h "$dctl_dir"
 
 echo "Copy of dctl files completed."
