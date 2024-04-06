@@ -6,19 +6,12 @@
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
 DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
 DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
-DEFINE_UI_PARAMS(falsecolors, LogC3 False colors, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
 // headers
 #include "MS-LogC3.h"
 #include "MS-Utils.h"
-
-struct LogC3Color
-{
-    float stop;
-    float r;
-    float g;
-    float b;
-};
 
 // ev stops
 __DEVICE__ float evstops(int ev) {
@@ -40,43 +33,21 @@ __DEVICE__ float evstops(int ev) {
     return 0.0;
 }
 
-// false color
-__DEVICE__ float3 falsecolor(float3 input_rgb, int ei, int ev) {
-
-    LogC3Color colors[] = {
-        {-8, 0.01f, 0.01f, 0.01f},
-        {-7, 0.05f, 0.05f, 0.05f},
-        {-6, 0.10f, 0.10f, 0.10f},
-        {-5, 0.40f, 0.25f, 0.60f},
-        {-4, 0.20f, 0.45f, 0.70f},
-        {-3, 0.40f, 0.60f, 0.95f},
-        {-2, 0.40f, 0.60f, 0.25f},
-        {-1, 0.60f, 0.90f, 0.55f},
-        {0,  0.50f, 0.50f, 0.50f},
-        {1,  1.00f, 0.95f, 0.55f},
-        {2,  0.90f, 0.50f, 0.25f},
-        {3,  0.90f, 0.60f, 0.25f},
-        {4,  0.90f, 0.30f, 0.20f},
-        {5,  0.90f, 0.35f, 0.30f},
-        {6,  0.90f, 0.90f, 0.90f},
-        {7,  0.95f, 0.95f, 0.95f},
-        {8,  0.99f, 0.99f, 0.99f}
-    };
-    LogC3Curve cv = curve(ei);
-    float evs = evstops(ev);  
-    unsigned long length = sizeof(colors) / sizeof(LogC3Color);
-    for (unsigned long i = 0; i < length; i++) {
-
+// logc3 color
+__DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
+    LogC3Curve cv = logC3_curve(ei);
+    float evs = evstops(ev);
+    LogC3Color colors[logC3_stops];
+    for (unsigned long i = 0; i < logC3_stops; i++) {
+        colors[i] = logC3_colors[i];
         float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
         float log = min(cv.lin_logC3(lin), 1.0f);
         colors[i].stop = log;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
     float lum = luma(input_rgb);
-    //lum *= pow(2.0, evs); 
-
-    for (unsigned long i = 0; i < length; i++) {
-        if (lum <= colors[i].stop || i == (sizeof(colors) / sizeof(LogC3Color)) - 1) {
+    for (unsigned long i = 0; i < logC3_stops; i++) {
+        if (lum <= colors[i].stop || i == (sizeof(logC3_colors) / sizeof(LogC3Color)) - 1) {
             result = make_float3(colors[i].r, colors[i].g, colors[i].b);
             break;
         }
@@ -89,8 +60,25 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
     float3 result = lin_logC3(logC3_lin(rgb, ei) * pow(2.0, exposure), ei);
-    if (falsecolors > 0) {
-        result = falsecolor(result, ei, ev);
+    if (showcolors > 0) {
+        result = logC3_color(result, ei, ev);
+    }
+    if (showlegend > 0) {
+        int legendwidth = p_Width * 0.8;
+        int offset = p_Height * 0.02;
+        int barheight = p_Height * 0.05;
+        int startY = p_Height - barheight - offset;
+        int startX = p_Width * 0.1;
+        int endX = startX + legendwidth;
+        if (p_Y >= startY && p_Y < startY + barheight && p_X >= startX && p_X < endX) {
+            int width = legendwidth / logC3_stops;
+            int index = (p_X - startX) / width;
+            int x = (p_X - startX) % width;
+            int y = p_Y - startY;
+            if (index >= 0 && index < logC3_stops) {
+                return make_float3(logC3_colors[index].r, logC3_colors[index].g, logC3_colors[index].b);
+            }
+        }
     }
     return result;
 }

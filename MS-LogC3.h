@@ -4,6 +4,36 @@
 
 // clang-format on
 
+// LogC3Color
+struct LogC3Color
+{
+    float stop;
+    float r;
+    float g;
+    float b;
+};
+
+__CONSTANT__ LogC3Color logC3_colors[] = {
+    {-8, 0.01f, 0.01f, 0.01f},
+    {-7, 0.05f, 0.05f, 0.05f},
+    {-6, 0.10f, 0.10f, 0.10f},
+    {-5, 0.40f, 0.25f, 0.60f},
+    {-4, 0.20f, 0.45f, 0.70f},
+    {-3, 0.40f, 0.60f, 0.95f},
+    {-2, 0.40f, 0.60f, 0.25f},
+    {-1, 0.60f, 0.90f, 0.55f},
+    {0,  0.50f, 0.50f, 0.50f},
+    {1,  1.00f, 0.95f, 0.25f},
+    {2,  0.90f, 0.50f, 0.25f},
+    {3,  0.90f, 0.60f, 0.25f},
+    {4,  0.90f, 0.30f, 0.20f},
+    {5,  0.90f, 0.35f, 0.30f},
+    {6,  0.90f, 0.90f, 0.90f},
+    {7,  0.95f, 0.95f, 0.95f},
+    {8,  0.99f, 0.99f, 0.99f}
+};
+#define logC3_stops 17
+
 // LogC3 curve
 struct LogC3Curve
 {
@@ -23,7 +53,7 @@ struct LogC3Curve
     }
 };
 
-__DEVICE__ LogC3Curve curve(int ei) {
+__DEVICE__ LogC3Curve logC3_curve(int ei) {
     LogC3Curve curve;
     if (ei == EI160) {
         curve = { 160,  0.005561, 5.555556, 0.080216, 0.269036, 0.381991, 5.842037, 0.092778 };
@@ -54,23 +84,22 @@ __DEVICE__ LogC3Curve curve(int ei) {
 // Convert LogC3 to linear
 __DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
 
-    LogC3Curve cv = curve(ei);
+    LogC3Curve cv = logC3_curve(ei);
     return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
 }
 
 // Convert linear to LogC3
 __DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
 
-    LogC3Curve cv = curve(ei);
+    LogC3Curve cv = logC3_curve(ei);
     return make_float3(cv.lin_logC3(rgb.x), cv.lin_logC3(rgb.y), cv.lin_logC3(rgb.z));
 }
 
 // Convert linear to Cineon
 __DEVICE__ float3 lin_cineon(float3 rgb) {
-    float normalizedRefBlack = 95.0 / 1023.0;
-    float normalizedRefWhite = 685.0 / 1023.0;
-    float gain = 1.0 - pow(10.0, (normalizedRefBlack - normalizedRefWhite) * 0.003333333333);
-    // cineon log conversion
-    rgb = (log(max((rgb - normalizedRefBlack) * gain, 0.0) + 1.0) / 7.85181516711) + normalizedRefWhite;
+    float black = 95;
+    float white = 685;
+    float gain = 1.0 - pow(10.0, (black - white) * 0.003333333333);
+    rgb = float3(white / 1023.0) + log((rgb - 1.0) * gain + 1.0) / 7.85181516711;
     return rgb;
 }

@@ -6,8 +6,9 @@
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600});
 DEFINE_UI_PARAMS(contrastlut, Film contrast, DCTLUI_COMBO_BOX, 0, {CONTRASTLUT0, CONTRASTLUT1, CONTRASTLUT2, CONTRASTLUT3, CONTRASTLUT4, CONTRASTLUT5}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65});
 DEFINE_UI_PARAMS(cubelut, Film cube, DCTLUI_COMBO_BOX, 0, {CUBELUT0, CUBELUT1, CUBELUT2, CUBELUT3, CUBELUT4, CUBELUT5}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65});
-DEFINE_UI_PARAMS(contraststrength, Contrast strength, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
-DEFINE_UI_PARAMS(cubestrength, Colors strength, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
+DEFINE_UI_PARAMS(contrastblend, Contrast blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
+DEFINE_UI_PARAMS(cubeblend, Colors blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
+DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
 
 // luts
 DEFINE_LUT(LUT0, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
@@ -25,7 +26,9 @@ DEFINE_LUT(LUT5, ../Film Looks/Rec709 Kodak 2383 D65.cube)
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-
+    if (convertcineon) {
+        rgb = lin_cineon(logC3_lin(rgb, ei));
+    }
     float3 contrast;
     if (cubelut == CUBELUT0) {    
         contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0);
@@ -41,8 +44,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5);
     }
     float3 result = set_grayscale(contrast.x, contrast.y, contrast.z, grayscale(rgb.x, rgb.y, rgb.z) );
-    rgb = mix(rgb, result, cubestrength / 100.0);
-
+    rgb = mix(rgb, result, cubeblend / 100.0);
     float3 color;
     float ctgs = grayscale(rgb.x, rgb.y, rgb.z);
     if (contrastlut == CONTRASTLUT0) {    
@@ -59,8 +61,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         color = APPLY_LUT(ctgs, ctgs, ctgs, LUT5);
     }
     float clgs = grayscale(color.x, color.y, color.z);
-    float gs = mix(ctgs, clgs, contraststrength / 100.0);
+    float gs = mix(ctgs, clgs, contrastblend / 100.0);
     
     rgb = set_grayscale(rgb.x, rgb.y, rgb.z, gs);
-    return rgb; 
+    return rgb;
 }
