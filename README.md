@@ -3,7 +3,24 @@ Readme for dctl
 
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/mikaelsundell/icloud-snapshot/blob/master/license.md)
 
-  
+Table of Contents
+=================
+
+- [Readme for dctl](#readme-for-dctl)
+- [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Installation and utils](#installation-and-utils)
+- [DCTLs](#dctls)
+  - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
+  - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
+  - [MS-Saturation](#ms-saturation)
+  - [DCTLs from other projects](#dctls-from-other-projects)
+    - [TetraInterp.dctl](#tetrainterpdctl)
+    - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
+  - [LogC3 EI800 reference chart](#logc3-ei800-reference-chart)
+  - [Documentation](#documentation)
+  - [Web Resources](#web-resources)
+
 Introduction
 ---------
 
@@ -42,18 +59,17 @@ For added convenience, the open.sh script is provided, enabling easy access to v
 ./run.sh snapshot
 ````
 
-Dctls
----------
+# DCTLs
 
 ## MS-LogC3-Exposure.dctl
 
-![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png 'MS-LogC3-Exposure')
+![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure")
 
 This script is crafted for precise exposure adjustments within ARRI LogC3 footage, incorporating a false color to aid in achieving correct exposure levels.
 
 ## MS-LogC3-Print.dctl
 
-![MS-LogC3-Exposure figure](resources/MS-LogC3-Print.png 'MS-LogC3-Exposure')
+![MS-LogC3-Print figure](resources/MS-LogC3-Print.png "MS-LogC3-Print")
 
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
@@ -61,23 +77,26 @@ Made for print emulation, this DCTL applies DaVinci Resolve's built-in film look
 
 Focusing on HSV-based adjustments, this script provides a tool for fine-tuning saturation.
 
-## DCTLs from other projects ##
+## DCTLs from other projects
 
-TetraInterp.dctl
-* Copyright (c) 2021 calvinsilly, Ember Light, Nick Eason
+### TetraInterp.dctl
 
-TetraInterpHSV.dctl
-* Copyright (c) 2021 calvinsilly, Ember Light, Nick Eason
+- Copyright © 2021 calvinsilly, Ember Light, Nick Eason
+
+### TetraInterpHSV.dctl
+
+- Copyright © 2021 calvinsilly, Ember Light, Nick Eason
 
 ## LogC3 EI800 reference chart
 
 The LogC3 reference chart created using the logctool command:
 
-* https://github.com/mikaelsundell/logctool
+- [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr) (https://github.com/mikaelsundell/logctool)
 
 ARRI LogC3 EI800 EXR:
 
-* [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr)
+- [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr)
+
 
 Documentation
 ---------
