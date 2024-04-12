@@ -13,7 +13,8 @@ Table of Contents
 - [DCTLs](#dctls)
   - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
   - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
-  - [MS-Saturation](#ms-saturation)
+  - [MS-Stripify.dctl](#ms-stripifydctl)
+  - [MS-Saturation.dctl](#ms-saturationdctl)
   - [DCTLs from other projects](#dctls-from-other-projects)
     - [Film Grain.dctl](#film-graindctl)
     - [Printer Lights.dctl](#printer-lightsdctl)
@@ -69,15 +70,27 @@ For added convenience, the open.sh script is provided, enabling easy access to v
 
 This script is crafted for precise exposure adjustments within ARRI LogC3 footage, incorporating a false color to aid in achieving correct exposure levels.
 
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
+
 ## MS-LogC3-Print.dctl
 
 ![MS-LogC3-Print figure](resources/MS-LogC3-Print.png "MS-LogC3-Print")
 
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
-## MS-Saturation
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
-Focusing on HSV-based adjustments, this script provides a tool for fine-tuning saturation.
+## MS-Stripify.dctl
+
+Matrix adjustments, this DCTL simplifies the color palette by push colors into a warm/ cool strip.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
+
+## MS-Saturation.dctl
+
+HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation using saturation in HSV.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Saturation.dctl
 
 ## DCTLs from other projects
 
