@@ -13,6 +13,7 @@ Table of Contents
 - [DCTLs](#dctls)
   - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
   - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
+  - [MS-Cineon.dctl](#ms-cineondctl)
   - [MS-Stripify.dctl](#ms-stripifydctl)
   - [MS-Saturation.dctl](#ms-saturationdctl)
   - [DCTLs from other projects](#dctls-from-other-projects)
@@ -79,6 +80,14 @@ This script is crafted for precise exposure adjustments within ARRI LogC3 footag
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
+
+## MS-Cineon.dctl
+
+![MS-LogC3-Print figure](resources/MS-Cineon.png "MS-Cineon")
+
+Cineon negative inversion, this DCTL applies an experimental cineon inversion to a scanned negative with the option to set dmin values based on negative border in 10-bit values.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon.dctl
 
 ## MS-Stripify.dctl
 
