@@ -29,40 +29,39 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     if (convertcineon) {
         rgb = lin_cineon(logC3_lin(rgb, ei));
     }
-    float3 contrast;
-    if (cubelut == CUBELUT0) {    
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0);
-    } else if (cubelut == CUBELUT1) {
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1);
-    } else if (cubelut == CUBELUT2) {
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2);
-    } else if (cubelut == CUBELUT3) {
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3);
-    } else if (cubelut == CUBELUT4) {
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4);
-    } else if (cubelut == CUBELUT5) {
-        contrast = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5);
-    }
-    float3 result = set_grayscale(contrast.x, contrast.y, contrast.z, grayscale(rgb.x, rgb.y, rgb.z) );
-    rgb = mix(rgb, result, cubeblend / 100.0);
     float3 color;
+    if (cubelut == CUBELUT0) {    
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0);
+    } else if (cubelut == CUBELUT1) {
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1);
+    } else if (cubelut == CUBELUT2) {
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2);
+    } else if (cubelut == CUBELUT3) {
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3);
+    } else if (cubelut == CUBELUT4) {
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4);
+    } else if (cubelut == CUBELUT5) {
+        color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5);
+    }
+    float3 result = set_grayscale(color.x, color.y, color.z, grayscale(rgb.x, rgb.y, rgb.z) );
+    rgb = mix(rgb, result, cubeblend / 100.0);
+    float3 contrast;
     float ctgs = grayscale(rgb.x, rgb.y, rgb.z);
     if (contrastlut == CONTRASTLUT0) {    
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT0);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT0);
     } else if (contrastlut == CONTRASTLUT1) {
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT1);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT1);
     } else if (contrastlut == CONTRASTLUT2) {
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT2);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT2);
     } else if (contrastlut == CONTRASTLUT3) {
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT3);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT3);
     } else if (contrastlut == CONTRASTLUT4) {
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT4);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT4);
     } else if (contrastlut == CONTRASTLUT5) {
-        color = APPLY_LUT(ctgs, ctgs, ctgs, LUT5);
+        contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT5);
     }
-    float clgs = grayscale(color.x, color.y, color.z);
-    float gs = mix(ctgs, clgs, contrastblend / 100.0);
-    
+    float clgs = grayscale(contrast.x, contrast.y, contrast.z);
+    float gs = mix(ctgs, clgs, contrastblend / 100.0);    
     rgb = set_grayscale(rgb.x, rgb.y, rgb.z, gs);
     return rgb;
 }
