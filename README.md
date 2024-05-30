@@ -104,6 +104,8 @@ Made for print emulation, this DCTL applies DaVinci Resolve's built-in film look
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
+**Note:** The script includes relative search paths to DaVinci Resolve's LUT folder, for Windows change to "\\" instead "/",line 15-20.
+
 ## MS-LogC3-Exposure.dctl
 
 ![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure")
