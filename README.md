@@ -1,12 +1,11 @@
-Readme for dctl
-====================
+# DCTL #
 
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/mikaelsundell/icloud-snapshot/blob/master/license.md)
 
 Table of Contents
 =================
 
-- [Readme for dctl](#readme-for-dctl)
+- [DCTL](#dctl)
 - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Installation and utils](#installation-and-utils)
@@ -34,7 +33,7 @@ Table of Contents
 Introduction
 ---------
 
-A collection of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 in DaVinci Resolve. These DCTLs are  designed for photographers and cinematographers seeking a photographic approach to color correction and grading.
+A collection of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs are designed for photographers and cinematographers seeking a photographic approach to color correction and grading from log digital and film negatives.
   
 Installation and utils
 ---------
