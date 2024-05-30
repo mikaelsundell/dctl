@@ -11,18 +11,24 @@ Table of Contents
   - [Introduction](#introduction)
   - [Installation and utils](#installation-and-utils)
 - [DCTLs](#dctls)
+  - [Cineon color processing](#cineon-color-processing)
+    - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl)
+    - [MS-Cineon-Invert.dctl](#ms-cineon-invertdctl)
+    - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl)
+  - [LogC3 color processing](#logc3-color-processing)
+    - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
   - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
-  - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
-  - [MS-Cineon.dctl](#ms-cineondctl)
-  - [MS-Stripify.dctl](#ms-stripifydctl)
-  - [MS-Saturation.dctl](#ms-saturationdctl)
+    - [MS-LogC3-Transform.dctl](#ms-logc3-transformdctl)
+  - [Utility DCTLs](#utility-dctls)
+    - [MS-Stripify.dctl](#ms-stripifydctl)
+    - [MS-Saturation.dctl](#ms-saturationdctl)
   - [DCTLs from other projects](#dctls-from-other-projects)
     - [Film Grain.dctl](#film-graindctl)
     - [Printer Lights.dctl](#printer-lightsdctl)
     - [TetraInterp.dctl](#tetrainterpdctl)
     - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
-  - [LogC3 EI800 reference chart](#logc3-ei800-reference-chart)
-  - [Documentation](#documentation)
+  - [ARRI LogC3 EI800 reference chart](#arri-logc3-ei800-reference-chart)
+  - [References](#references)
   - [Web Resources](#web-resources)
 
 Introduction
@@ -65,37 +71,68 @@ For added convenience, the open.sh script is provided, enabling easy access to v
 
 # DCTLs
 
-## MS-LogC3-Exposure.dctl
+## Cineon color processing
 
-![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure")
+### MS-Cineon-Exposure.dctl
 
-This script is crafted for precise exposure adjustments within ARRI LogC3 footage, incorporating a false color to aid in achieving correct exposure levels.
+![MS-LogC3-Cineon figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure")
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
+Cineon exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
 
-## MS-LogC3-Print.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
 
-![MS-LogC3-Print figure](resources/MS-LogC3-Print.png "MS-LogC3-Print")
+### MS-Cineon-Invert.dctl
+
+![MS-LogC3-Exposure figure](resources/MS-Cineon-Invert.png "MS-LogC3-Invert")
+
+Cineon negative inversion from dmin ratios with adjustable controls for density, bitdepth, offset and scale. Dmin values can either be specified manually or samples using sampler rectangle from border or other dmin base.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
+
+
+
+### MS-Cineon-Transform.dctl
+
+Cineon conversion to and from linear. 
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
+
+
+## LogC3 color processing
+
+### MS-LogC3-Print.dctl
+
+![MS-LogC3-Cineon figure](resources/MS-LogC3-Print.png "MS-Cineon-Exposure")
 
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
-## MS-Cineon.dctl
 
-![MS-LogC3-Print figure](resources/MS-Cineon.png "MS-Cineon")
+## MS-LogC3-Exposure.dctl
 
-Cineon negative inversion, this DCTL applies an experimental cineon inversion to a scanned negative with the option to set dmin values based on negative border in 10-bit values.
+![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure")
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon.dctl
+LogC3 exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
 
-## MS-Stripify.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
+
+### MS-LogC3-Transform.dctl
+
+LogC3 conversion to and from linear. 
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
+
+
+## Utility DCTLs
+
+### MS-Stripify.dctl
 
 Matrix adjustments, this DCTL simplifies the color palette by push colors into a warm/ cool strip.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
 
-## MS-Saturation.dctl
+### MS-Saturation.dctl
 
 HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation using saturation in HSV.
 
@@ -119,24 +156,31 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 - Copyright © 2021 calvinsilly, Ember Light, Nick Eason
 
-## LogC3 EI800 reference chart
+## ARRI LogC3 EI800 reference chart
 
-The LogC3 reference chart created using the logctool command:
-
-- [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr) (https://github.com/mikaelsundell/logctool)
-
-ARRI LogC3 EI800 EXR:
+ARRI LogC3 EI800 EXR
 
 - [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr)
 
+Logctool project:
 
-Documentation
+- https://github.com/mikaelsundell/logctool
+
+
+References
 ---------
 
-Blend modes, used in MS-LogC3-Print.dctl
+ARRI Companion to DI
+* https://dicomp.arri.de/digital/digital_systems/DIcompanion/index.html
+  
+Blend modes:
 * https://skia.googlesource.com/skia/+/70e432e72745/gm/hsl.cpp
 
-Grayscale legacy luma 
+Cineon conversion in RV:
+* https://github.com/AcademySoftwareFoundation/OpenRV/blob/main/src/plugins/rv-packages/additional_nodes/LinearToCineonLog.glsl
+* https://github.com/AcademySoftwareFoundation/OpenRV/blob/main/src/plugins/rv-packages/additional_nodes/CineonLogToLinear.glsl
+
+Grayscale legacy luma:
 * https://en.wikipedia.org/wiki/Grayscale
 
 
