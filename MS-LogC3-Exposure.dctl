@@ -1,6 +1,6 @@
-// Copyright 2022-present Contributors to the colorpicker project.
+// Copyright 2022-present Contributors to the dctl project.
 // SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/mikaelsundell/davinci
+// https://github.com/mikaelsundell/dctl
 
 // clang-format off
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
