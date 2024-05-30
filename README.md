@@ -89,14 +89,11 @@ Cineon negative inversion from dmin ratios with adjustable controls for density,
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
 
-
-
 ### MS-Cineon-Transform.dctl
 
 Cineon conversion to and from linear. 
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
-
 
 ## LogC3 color processing
 
@@ -107,7 +104,6 @@ Cineon conversion to and from linear.
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
-
 
 ## MS-LogC3-Exposure.dctl
 
@@ -121,8 +117,7 @@ LogC3 exposure from photographic stops, incorporating a false color to aid in ac
 
 LogC3 conversion to and from linear. 
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
-
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Transform.dctl
 
 ## Utility DCTLs
 
