@@ -27,7 +27,7 @@ Table of Contents
     - [Printer Lights.dctl](#printer-lightsdctl)
     - [TetraInterp.dctl](#tetrainterpdctl)
     - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
-  - [ARRI LogC3 EI800 reference chart](#arri-logc3-ei800-reference-chart)
+  - [Reference charts](#reference-charts)
   - [References](#references)
   - [Web Resources](#web-resources)
 
@@ -151,16 +151,23 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 - Copyright © 2021 calvinsilly, Ember Light, Nick Eason
 
-## ARRI LogC3 EI800 reference chart
+## Reference charts
 
-ARRI LogC3 EI800 EXR
+ARRI LogC3 10-bit DPX
 
-- [logctool_ei800_3840x2160.exr](resources/logctool_ei800_3840x2160.exr)
+![logctool_LogC3_DCI_2K figure](resources/logctool_LogC3_DCI_2K.png "MS-Cineon-Exposure")
+
+- [logctool_LogC3_DCI_2K.dpx](resources/logctool_LogC3_DCI_2K.dpx)
+
+Cineon 10-bit DPX
+
+![logctool_LogC3_to_Cineon_DCI_2K figure](resources/logctool_LogC3_to_Cineon_DCI_2K.png "MS-Cineon-Exposure")
+
+- [logctool_LogC3_to_Cineon_DCI_2K.dpx](resources/logctool_LogC3_to_Cineon_DCI_2K.dpx)
 
 Logctool project:
 
 - https://github.com/mikaelsundell/logctool
-
 
 References
 ---------
