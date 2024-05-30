@@ -3,7 +3,6 @@
 // https://github.com/mikaelsundell/davinci
 
 // clang-format off
-DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
 DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
 DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
@@ -11,7 +10,7 @@ DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
 // headers
-#include "MS-LogC3.h"
+#include "MS-Cineon.h"
 #include "MS-Utils.h"
 
 // ev stops
@@ -34,21 +33,21 @@ __DEVICE__ float evstops(int ev) {
     return 0.0;
 }
 
-// logc3 color
-__DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
-    LogC3Curve cv = logC3_curve(ei);
+// cineon color
+__DEVICE__ float3 cineon_color(float3 input_rgb, int ev) {
+    CineonCurve cv = cineon_curve();
     float evs = evstops(ev);
-    LogC3Color colors[logC3_stops];
-    for (unsigned long i = 0; i < logC3_stops; i++) {
-        colors[i] = logC3_colors[i];
+    CineonColor colors[cineon_stops];
+    for (unsigned long i = 0; i < cineon_stops; i++) {
+        colors[i] = cineon_colors[i];
         float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
-        float log = min(cv.lin_logC3(lin), 1.0f);
-        colors[i].stop = log;
+        float3 log = min(cv.lin_cineon(make_float3(lin, lin, lin)), 1.0f);
+        colors[i].stop = log.x;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
     float lum = luma_rec709(input_rgb);
-    for (unsigned long i = 0; i < logC3_stops; i++) {
-        if (lum <= colors[i].stop || i == (sizeof(logC3_colors) / sizeof(LogC3Color)) - 1) {
+    for (unsigned long i = 0; i < cineon_stops; i++) {
+        if (lum <= colors[i].stop || i == (sizeof(cineon_colors) / sizeof(CineonColor)) - 1) {
             result = make_float3(colors[i].r, colors[i].g, colors[i].b);
             break;
         }
@@ -60,9 +59,9 @@ __DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    rgb = lin_logC3(logC3_lin(rgb, ei) * pow(2.0, exposure), ei);
+    rgb = max(lin_cineon(cineon_lin(rgb) * pow(2.0, exposure)), 0.0f);
     if (showcolors > 0) {
-        rgb = logC3_color(rgb, ei, ev);
+        rgb = cineon_color(rgb, ev);
     }
     if (showlegend > 0) {
         int legendwidth = p_Width * 0.8;
@@ -72,12 +71,12 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         int startX = p_Width * 0.1;
         int endX = startX + legendwidth;
         if (p_Y >= startY && p_Y < startY + barheight && p_X >= startX && p_X < endX) {
-            int width = legendwidth / logC3_stops;
+            int width = legendwidth / cineon_stops;
             int index = (p_X - startX) / width;
             int x = (p_X - startX) % width;
             int y = p_Y - startY;
-            if (index >= 0 && index < logC3_stops) {
-                return make_float3(logC3_colors[index].r, logC3_colors[index].g, logC3_colors[index].b);
+            if (index >= 0 && index < cineon_stops) {
+                return make_float3(cineon_colors[index].r, cineon_colors[index].g, cineon_colors[index].b);
             }
         }
     }

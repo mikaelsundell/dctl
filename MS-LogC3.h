@@ -24,10 +24,10 @@ __CONSTANT__ LogC3Color logC3_colors[] = {
     {-1, 0.60f, 0.90f, 0.55f},
     {0,  0.50f, 0.50f, 0.50f},
     {1,  1.00f, 0.95f, 0.25f},
-    {2,  0.90f, 0.50f, 0.25f},
-    {3,  0.90f, 0.60f, 0.25f},
-    {4,  0.90f, 0.30f, 0.20f},
-    {5,  0.90f, 0.35f, 0.30f},
+    {2,  0.90f, 0.60f, 0.25f},
+    {3,  0.90f, 0.50f, 0.25f},
+    {4,  0.90f, 0.35f, 0.30f},
+    {5,  0.90f, 0.30f, 0.20f},
     {6,  0.90f, 0.90f, 0.90f},
     {7,  0.95f, 0.95f, 0.95f},
     {8,  0.99f, 0.99f, 0.99f}
@@ -49,7 +49,8 @@ struct LogC3Curve
         return ((lin > cut) ? c * log10(a * lin + b) + d : e * lin + f);
     }
     float logC3_lin(float log) {
-        return ((log > e * cut + f) ? (pow(10, (log - d) / c) - b) / a : (log - f) / e);
+        float lin = ((log > e * cut + f) ? (pow(10, (log - d) / c) - b) / a : (log - f) / e);
+        return fmax(lin, 0.0f); // fmax for non-log negative values
     }
 };
 
@@ -81,13 +82,6 @@ __DEVICE__ LogC3Curve logC3_curve(int ei) {
     return curve;
 }
 
-// Convert LogC3 to linear
-__DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
-
-    LogC3Curve cv = logC3_curve(ei);
-    return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
-}
-
 // Convert linear to LogC3
 __DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
 
@@ -95,11 +89,9 @@ __DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
     return make_float3(cv.lin_logC3(rgb.x), cv.lin_logC3(rgb.y), cv.lin_logC3(rgb.z));
 }
 
-// Convert linear to Cineon
-__DEVICE__ float3 lin_cineon(float3 rgb) {
-    float black = 95;
-    float white = 685;
-    float gain = 1.0 - pow(10.0, (black - white) * 0.003333333333);
-    rgb = float3(white / 1023.0) + log((rgb - 1.0) * gain + 1.0) / 7.85181516711;
-    return rgb;
-}
+// Convert LogC3 to linear
+__DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
+
+    LogC3Curve cv = logC3_curve(ei);
+    return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
+}    

@@ -9,6 +9,7 @@ DEFINE_UI_PARAMS(cubelut, Film cube, DCTLUI_COMBO_BOX, 0, {CUBELUT0, CUBELUT1, C
 DEFINE_UI_PARAMS(contrastblend, Contrast blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(cubeblend, Colors blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
+DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 
 // luts
 DEFINE_LUT(LUT0, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
@@ -20,6 +21,7 @@ DEFINE_LUT(LUT5, ../Film Looks/Rec709 Kodak 2383 D65.cube)
 
 // headers
 #include "MS-LogC3.h"
+#include "MS-Cineon.h"
 #include "MS-Utils.h"
 
 // transform
@@ -29,6 +31,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     if (convertcineon) {
         rgb = lin_cineon(logC3_lin(rgb, ei));
     }
+
     float3 color;
     if (cubelut == CUBELUT0) {    
         color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0);
@@ -43,10 +46,11 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     } else if (cubelut == CUBELUT5) {
         color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5);
     }
-    float3 result = set_grayscale(color.x, color.y, color.z, grayscale(rgb.x, rgb.y, rgb.z) );
+
+    float3 result = adjust_luma_rec601(color, luma_rec601(rgb));
     rgb = mix(rgb, result, cubeblend / 100.0);
     float3 contrast;
-    float ctgs = grayscale(rgb.x, rgb.y, rgb.z);
+    float ctgs = luma_rec601(rgb);
     if (contrastlut == CONTRASTLUT0) {    
         contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT0);
     } else if (contrastlut == CONTRASTLUT1) {
@@ -60,8 +64,12 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     } else if (contrastlut == CONTRASTLUT5) {
         contrast = APPLY_LUT(ctgs, ctgs, ctgs, LUT5);
     }
-    float clgs = grayscale(contrast.x, contrast.y, contrast.z);
+    float clgs = luma_rec601(contrast);
     float gs = mix(ctgs, clgs, contrastblend / 100.0);    
-    rgb = set_grayscale(rgb.x, rgb.y, rgb.z, gs);
+    rgb = max(adjust_luma_rec601(rgb, gs), 0.0);
+
+    if (adjustdisplay) {
+        rgb = adjust_display(rgb);
+    }
     return rgb;
 }

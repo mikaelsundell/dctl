@@ -1,0 +1,122 @@
+// Copyright 2022-present Contributors to the colorpicker project.
+// SPDX-License-Identifier: BSD-3-Clause
+// https://github.com/mikaelsundell/dctl
+
+DEFINE_UI_PARAMS(density, Density, DCTLUI_SLIDER_FLOAT, 2.046, 0, 4.092, 1);
+DEFINE_UI_PARAMS(bitdepth, Bitdepth, DCTLUI_SLIDER_FLOAT, 1023, 0, 2048, 1);
+DEFINE_UI_PARAMS(offset, Offset, DCTLUI_SLIDER_FLOAT, 95, 0, 190, 1);
+DEFINE_UI_PARAMS(samplerx, Sampler x, DCTLUI_SLIDER_FLOAT, 0, 0, 4096, 1);
+DEFINE_UI_PARAMS(samplery, Sampler y, DCTLUI_SLIDER_FLOAT, 0, 0, 2048, 1);
+DEFINE_UI_PARAMS(samplerw, Sampler width, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
+DEFINE_UI_PARAMS(samplerh, Sampler height, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
+
+
+DEFINE_UI_PARAMS(dminx, Density dmin R, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+DEFINE_UI_PARAMS(dminy, Density dmin G, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+DEFINE_UI_PARAMS(dminz, Density dmin B, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+
+DEFINE_UI_PARAMS(scalex, Density scale R, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
+DEFINE_UI_PARAMS(scaley, Density scale G, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
+DEFINE_UI_PARAMS(scalez, Density scale B, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
+
+DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(showsampler, Show sampler, DCTLUI_CHECK_BOX, 1)
+
+DEFINE_UI_PARAMS(dminmethod, Dmin method, DCTLUI_COMBO_BOX, 0, {DMINRGB, SAMPLER}, {Density dmin RGB, Sampler})
+DEFINE_UI_PARAMS(samplercolor, Sampler color, DCTLUI_COMBO_BOX, 0, {WHITE, BLACK, RED, GREEN, BLUE}, {White, Black, Red, Green, Blue})
+
+// headers
+#include "MS-Utils.h"
+#include "MS-Cineon.h"
+
+__DEVICE__ inline float3 pixel(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, int p_X, int p_Y)
+{
+    return make_float3(
+        _tex2D(p_TexR, p_X, p_Y),
+        _tex2D(p_TexG, p_X, p_Y),
+        _tex2D(p_TexB, p_X, p_Y)
+    );
+}
+
+__DEVICE__ float3 sample(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, ROI roi)
+{
+    float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+    int count = 0;
+    for (int i = roi.x1; i < roi.x2; i++) {
+        for (int j = roi.y1; j < roi.y2; j++) {
+            sum += pixel(p_TexR, p_TexG, p_TexB, i, j);
+            count++;
+        }
+    }
+    if (count > 0) {
+        return sum / make_float3(count, count, count);
+    } else {
+        return make_float3(0.0f, 0.0f, 0.0f);
+    }
+}
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB)
+{
+    float3 rgb = pixel(p_TexR, p_TexG, p_TexB, p_X, p_Y);
+    float3 dmin;
+    ROI sampler;
+
+    // sample
+    if (dminmethod == SAMPLER) {
+        sampler.x1 = samplerx - samplerw / 2;
+        sampler.x2 = samplerx + samplerw / 2;
+        sampler.y1 = samplery - samplerh / 2;
+        sampler.y2 = samplery + samplerh / 2;
+        dmin = sample(p_TexR, p_TexG, p_TexB, sampler);
+    } else {
+        dmin = make_float3(dminx, dminy, dminz);
+
+    }
+
+    // scale
+    float3 scale = make_float3(scalex, scaley, scalez);
+    
+    // cineon
+    CineonCurve curve;
+    curve.density = density;
+    curve.bitdepth = bitdepth;
+    curve.offset = offset;
+    if (adjustdisplay) {
+        rgb = adjust_display(curve.invert_cineon(rgb, scale, dmin));
+    } else {
+        rgb = adjust_display(curve.invert_cineon(rgb, scale, dmin));
+    }
+
+    if (showsampler && dminmethod == SAMPLER) {
+        float3 color;
+        if (samplercolor == WHITE) {
+            color = make_float3(1.0f, 1.0f, 1.0f);
+        } else if (samplercolor == BLACK) {
+            color = make_float3(0.0f, 0.0f, 0.0f);
+        } else if (samplercolor == RED) {
+            color = make_float3(1.0f, 0.0f, 0.0f);
+        } else if (samplercolor == GREEN) {
+            color = make_float3(0.0f, 1.0f, 0.0f);
+        } else if (samplercolor == BLUE) {
+            color = make_float3(0.0f, 0.0f, 1.0f);
+        }
+
+        int crossw = (samplerw / 2) * 3 / 2;
+        int crossh = (samplerh / 2) * 3 / 2;
+        if ((p_X == sampler.x1 || p_X == sampler.x2 - 1) && (p_Y >= sampler.y1 && p_Y < sampler.y2) ||
+            (p_Y == sampler.y1 || p_Y == sampler.y2 - 1) && (p_X >= sampler.x1 && p_X < sampler.x2)) {
+            rgb = color;
+        } else {
+            if ((p_X >= sampler.x1 && p_X < sampler.x2) && (p_Y >= sampler.y1 && p_Y < sampler.y2)) {
+                rgb = dmin;
+            } else {
+               if ((p_X == samplerx && (p_Y >= samplery - crossh && p_Y < samplery + crossh)) ||
+                    (p_Y == samplery && (p_X >= samplerx - crossw && p_X < samplerx + crossw)))
+                {
+                    rgb = color;
+                }
+            }
+        }
+    }
+    return rgb;
+}

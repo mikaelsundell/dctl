@@ -4,6 +4,12 @@
 
 // clang-format on
 
+// roi
+typedef struct 
+{
+    int x1, x2, y1, y2;
+} ROI;
+
 // matrix
 typedef struct {
     float m00, m01, m02;
@@ -21,7 +27,7 @@ __DEVICE__ float3 multiply_matrix(float3 value, Matrix mat) {
     return result;
 }
 
-// Convert HSV to RGB
+// Convert hsv to rgb
 __DEVICE__ float3 hsv_rgb(float3 hsv) {
     float hue = hsv.x;
     float sat = hsv.y;
@@ -49,7 +55,7 @@ __DEVICE__ float3 hsv_rgb(float3 hsv) {
     return rgbp + m;
 }
 
-// Convert RGB to HSV
+// Convert rgb to hsv
 __DEVICE__ float3 rgb_hsv(float3 rgb) {
     float r = rgb.x;
     float g = rgb.y;
@@ -57,7 +63,6 @@ __DEVICE__ float3 rgb_hsv(float3 rgb) {
     float c_max = _fmaxf(_fmaxf(r, g), b);
     float c_min = _fminf(_fminf(r, g), b);
     float delta = c_max - c_min;
-
     float H;
     if (delta == 0.0f) {
         H = 0.0f;
@@ -66,7 +71,6 @@ __DEVICE__ float3 rgb_hsv(float3 rgb) {
     } else if (g >= r && g >= b) {
         H = (b - r) / delta + (2.0f);
     } else {
-        // b >= r && b >= g
         H = (r - g) / delta + 4.0f;
     }
     H = H / 6.0f;
@@ -81,17 +85,15 @@ __DEVICE__ float3 rgb_hsv(float3 rgb) {
     return color;
 }
 
-// Convert HSL to RGB
+// Convert hsl to rgb
 __DEVICE__ float3 hsl_rgb(float3 hsl) {
     float h = hsl.x / 360.0f; // Convert h to [0, 1] range
     float s = hsl.y;
     float l = hsl.z;
-
     float c = (1.0f - _fabs(2.0f * l - 1.0f)) * s;
     float x = c * (1.0f - _fabs(_fmod(h * 6.0f, 2.0f) - 1.0f));
     float m = l - c / 2.0f;
     float3 rgb = make_float3(0.0f, 0.0f, 0.0f);
-
     if (0.0f <= h && h < 1.0f/6.0f) {
         rgb = make_float3(c, x, 0.0f);
     } else if (1.0f/6.0f <= h && h < 2.0f/6.0f) {
@@ -105,12 +107,11 @@ __DEVICE__ float3 hsl_rgb(float3 hsl) {
     } else if (5.0f/6.0f <= h && h < 1.0f) {
         rgb = make_float3(c, 0.0f, x);
     }
-
     rgb += m;
     return rgb;
 }
 
-// Convert RGB to HSL
+// Convert rgb to hsl
 __DEVICE__ float3 rgb_hsl(float3 rgb) {
     float r = rgb.x;
     float g = rgb.y;
@@ -119,9 +120,7 @@ __DEVICE__ float3 rgb_hsl(float3 rgb) {
     float min = _fminf(_fminf(r, g), b);
     float h, s, l;
     l = (max + min) / 2.0f;
-
     float delta = max - min;
-
     if (delta == 0) {
         h = s = 0; // achromatic
     } else {
@@ -139,24 +138,37 @@ __DEVICE__ float3 rgb_hsl(float3 rgb) {
     return make_float3(h * 360.0f, s, l); // H in [0, 360], S and L in [0, 1]
 }
 
-// Calculate grayscale from RGB
-__DEVICE__ float grayscale(float r, float g, float b)
-{ 
-    float grayscale = r * 0.30f + g * 0.59f + b * 0.11f;
-    return grayscale;
+// Convert to luma in rec601
+__DEVICE__ float luma_rec601(float3 rgb)
+{
+    float luma = 0.299f * rgb.x + 0.587f * rgb.y + 0.114f * rgb.z;
+    return luma;
 }
 
-// Calculate grayscale from RGB
-__DEVICE__ float3 set_grayscale(float r, float g, float b, float l)
+// Convert to luma in rec709
+__DEVICE__ float luma_rec709(float3 rgb)
 {
-    float diff = l - grayscale(r, g, b);
-    float3 result = make_float3(r + diff, g + diff, b + diff);
+    float luma = 0.2126f * rgb.x + 0.7152f * rgb.y + 0.0722f * rgb.z;
+    return luma;
+}
+
+// Convert to luma in rec2100
+__DEVICE__ float luma_rec2100(float3 rgb)
+{
+    float luma = 0.2627f * rgb.x + 0.6780f * rgb.y + 0.0593f * rgb.z;
+    return luma;
+}
+
+// Adjust to luma in rec601
+__DEVICE__ float3 adjust_luma_rec601(float3 rgb, float l)
+{
+    float diff = l - luma_rec601(rgb);
+    float3 result = make_float3(rgb.x + diff, rgb.y + diff, rgb.z + diff);
     return result;
 }
 
-// Calculate luma from RGB
-__DEVICE__ float luma(float3 rgb)
+// Adjust for display
+__DEVICE__ float3 adjust_display(float3 rgb)
 {
-    float luma = 0.2126 * rgb.x + 0.7152 * rgb.y + 0.0722 * rgb.z;
-    return luma;
+    return max(rgb, 0.0f);;
 }
