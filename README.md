@@ -96,6 +96,8 @@ To account for the effects of age and the use of ECN-2 chemicals, developer time
 
 ![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
+Color calibration curves and log cineon code value macbeth charts at different exposures.
+
 **DCTL script**
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
