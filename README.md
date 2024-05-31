@@ -140,7 +140,7 @@ LogC3 conversion to and from linear.
 
 ### MS-Stripify.dctl
 
-Matrix adjustments, this DCTL simplifies the color palette by push colors into a warm/ cool strip.
+Matrix adjustments, this DCTL simplifies the color palette by pushing colors into a warm and cool strip.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
 
