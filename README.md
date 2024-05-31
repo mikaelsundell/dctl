@@ -92,7 +92,7 @@ Cineon negative inversion from dmin ratios with adjustable controls for density,
 
 #### ACES scene-linear and calibration curves
 
-To account for the effects of age and the use of ECN-2 chemicals, developer time and temperature calibration curves are applied with ideal Cineon values to convert the inverted negative into Cineon color values. In this example, photoscanning was used along with rawtoaces to convert the camera RAW data to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
+To account for the effects of film stock and the use of various ECN-2 chemicals, developer time and temperature, camera and lightbox - calibration curves are applied to match ideal Cineon code values to convert the negative into a positive. In this example, photoscanning was used along with rawtoaces to convert the camera RAW data to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
 
 ![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
