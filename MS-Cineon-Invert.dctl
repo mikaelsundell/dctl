@@ -5,23 +5,18 @@
 DEFINE_UI_PARAMS(density, Density, DCTLUI_SLIDER_FLOAT, 2.046, 0, 4.092, 1);
 DEFINE_UI_PARAMS(bitdepth, Bitdepth, DCTLUI_SLIDER_FLOAT, 1023, 0, 2048, 1);
 DEFINE_UI_PARAMS(offset, Offset, DCTLUI_SLIDER_FLOAT, 95, 0, 190, 1);
+DEFINE_UI_PARAMS(dminx, Density dmin R, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+DEFINE_UI_PARAMS(dminy, Density dmin G, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+DEFINE_UI_PARAMS(dminz, Density dmin B, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
+DEFINE_UI_PARAMS(scalex, Density scale R, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
+DEFINE_UI_PARAMS(scaley, Density scale G, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
+DEFINE_UI_PARAMS(scalez, Density scale B, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
 DEFINE_UI_PARAMS(samplerx, Sampler x, DCTLUI_SLIDER_FLOAT, 0, 0, 4096, 1);
 DEFINE_UI_PARAMS(samplery, Sampler y, DCTLUI_SLIDER_FLOAT, 0, 0, 2048, 1);
 DEFINE_UI_PARAMS(samplerw, Sampler width, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
 DEFINE_UI_PARAMS(samplerh, Sampler height, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
-
-
-DEFINE_UI_PARAMS(dminx, Density dmin R, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
-DEFINE_UI_PARAMS(dminy, Density dmin G, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
-DEFINE_UI_PARAMS(dminz, Density dmin B, DCTLUI_SLIDER_FLOAT, 0.5, 0, 10, 0.01);
-
-DEFINE_UI_PARAMS(scalex, Density scale R, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
-DEFINE_UI_PARAMS(scaley, Density scale G, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
-DEFINE_UI_PARAMS(scalez, Density scale B, DCTLUI_SLIDER_FLOAT, 1, 0, 10, 0.01);
-
+DEFINE_UI_PARAMS(showsampler, Show sampler, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
-DEFINE_UI_PARAMS(showsampler, Show sampler, DCTLUI_CHECK_BOX, 1)
-
 DEFINE_UI_PARAMS(dminmethod, Dmin method, DCTLUI_COMBO_BOX, 0, {DMINRGB, SAMPLER}, {Density dmin RGB, Sampler})
 DEFINE_UI_PARAMS(samplercolor, Sampler color, DCTLUI_COMBO_BOX, 0, {WHITE, BLACK, RED, GREEN, BLUE}, {White, Black, Red, Green, Blue})
 

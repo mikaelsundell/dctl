@@ -12,12 +12,21 @@ DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 
 // luts
+#ifdef DEVICE_IS_METAL
 DEFINE_LUT(LUT0, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
 DEFINE_LUT(LUT1, ../Film Looks/Rec709 Fujifilm 3513DI D60.cube)
 DEFINE_LUT(LUT2, ../Film Looks/Rec709 Fujifilm 3513DI D65.cube)
 DEFINE_LUT(LUT3, ../Film Looks/Rec709 Kodak 2383 D55.cube)
 DEFINE_LUT(LUT4, ../Film Looks/Rec709 Kodak 2383 D60.cube)
 DEFINE_LUT(LUT5, ../Film Looks/Rec709 Kodak 2383 D65.cube)
+#else
+DEFINE_LUT(LUT0, ..\\Film Looks\\Rec709 Fujifilm 3513DI D55.cube)
+DEFINE_LUT(LUT1, ..\\Film Looks\\Rec709 Fujifilm 3513DI D60.cube)
+DEFINE_LUT(LUT2, ..\\Film Looks\\Rec709 Fujifilm 3513DI D65.cube)
+DEFINE_LUT(LUT3, ..\\Film Looks\\Rec709 Kodak 2383 D55.cube)
+DEFINE_LUT(LUT4, ..\\Film Looks\\Rec709 Kodak 2383 D60.cube)
+DEFINE_LUT(LUT5, ..\\Film Looks\\Rec709 Kodak 2383 D65.cube)
+#endif
 
 // headers
 #include "MS-LogC3.h"

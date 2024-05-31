@@ -13,10 +13,12 @@ Table of Contents
   - [Cineon color processing](#cineon-color-processing)
     - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl)
     - [MS-Cineon-Invert.dctl](#ms-cineon-invertdctl)
+      - [Cineon inversion](#cineon-inversion)
+      - [ACES scene-linear and calibration curves](#aces-scene-linear-and-calibration-curves)
     - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl)
   - [LogC3 color processing](#logc3-color-processing)
     - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
-  - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
+    - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
     - [MS-LogC3-Transform.dctl](#ms-logc3-transformdctl)
   - [Utility DCTLs](#utility-dctls)
     - [MS-Stripify.dctl](#ms-stripifydctl)
@@ -74,7 +76,7 @@ For added convenience, the open.sh script is provided, enabling easy access to v
 
 ### MS-Cineon-Exposure.dctl
 
-![MS-LogC3-Cineon figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure")
+![MS-Cineon-Exposure figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure.dctl")
 
 Cineon exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
 
@@ -82,11 +84,25 @@ Cineon exposure from photographic stops, incorporating a false color to aid in a
 
 ### MS-Cineon-Invert.dctl
 
-![MS-LogC3-Exposure figure](resources/MS-Cineon-Invert.png "MS-LogC3-Invert")
+#### Cineon inversion
 
-Cineon negative inversion from dmin ratios with adjustable controls for density, bitdepth, offset and scale. Dmin values can either be specified manually or samples using sampler rectangle from border or other dmin base.
+![MS-Cineon-Invert.dctl figure](resources/MS-Cineon-Invert.png "MS-Cineon-Invert.dctl")
+
+Cineon negative inversion from dmin ratios with adjustable controls for density, bitdepth, offset and density scale. Dmin values can either be specified manually or samples using sampler rectangle from border or other dmin base. 
+
+#### ACES scene-linear and calibration curves
+
+To account for the effects of age and the use of ECN-2 chemicals, developer time and temperature calibration curves are applied with ideal Cineon values to convert the inverted negative into Cineon color values. In this example, photoscanning was used along with rawtoaces to convert the camera RAW data to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
+
+![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
+
+**DCTL script**
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
+
+**rawtoaces project**
+
+- https://github.com/AcademySoftwareFoundation/rawtoaces
 
 ### MS-Cineon-Transform.dctl
 
@@ -98,17 +114,15 @@ Cineon conversion to and from linear.
 
 ### MS-LogC3-Print.dctl
 
-![MS-LogC3-Cineon figure](resources/MS-LogC3-Print.png "MS-Cineon-Exposure")
+![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
 
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
-**Note:** The script includes relative search paths to DaVinci Resolve's LUT folder, for Windows change to "\\" instead "/", line 15-20.
+### MS-LogC3-Exposure.dctl
 
-## MS-LogC3-Exposure.dctl
-
-![MS-LogC3-Exposure figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure")
+![MS-LogC3-Exposure.dctl figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure.dctl")
 
 LogC3 exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
 
