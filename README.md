@@ -92,7 +92,7 @@ Cineon negative inversion from dmin ratios with adjustable controls for density,
 
 #### ACES scene-linear and calibration curves
 
-To account for the effects of film stock and the use of various ECN-2 chemicals, developer time and temperature, camera and lightbox - calibration curves are applied to match ideal Cineon code values to convert the negative into a positive. In this example, photoscanning was used along with rawtoaces to convert the camera RAW data to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
+To account for the effects of film stock and the use of various ECN-2 chemicals, developer time and temperature, camera and lightbox settings - calibration curves are applied to match ideal cineon code values. In this example, photoscanning was used along with the rawtoaces tool to convert the Camera RAW CR2 file to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
 
 ![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
@@ -118,7 +118,7 @@ Cineon conversion to and from linear.
 
 ![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
 
-Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 footage with adjustable controls for contrast and color strength.
+Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for contrast and color strength.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
