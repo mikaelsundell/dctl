@@ -88,7 +88,7 @@ Cineon exposure from photographic stops, incorporating a false color to aid in a
 
 ![MS-Cineon-Invert.dctl figure](resources/MS-Cineon-Invert.png "MS-Cineon-Invert.dctl")
 
-Cineon negative inversion from dmin ratios with adjustable controls for density, bitdepth, offset and density scale. Dmin values can either be specified manually or samples using sampler rectangle from border or other dmin base. 
+The Cineon negative inversion tool allows for precise control over the inversion process using adjustable parameters such as density, bit depth, offset, and density scale. You can specify Dmin values manually as floating-point numbers (obtained from tools like Pixel Analyzer in Nuke or similar software) or sample them using a rectangular sampler from the border or other Dmin base areas.
 
 #### ACES scene-linear and calibration curves
 
