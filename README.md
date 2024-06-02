@@ -35,7 +35,7 @@ Table of Contents
 Introduction
 ---------
 
-A continuously updated collection of DCTLs (DaVinci Color Transform Language) designed to enhance and educate on workflows using ARRI LogC3 and Cineon in DaVinci Resolve. This collection offers a photographic and creative approach to color correction and grading from log digital and film negatives, emphasizing the artistic nuances and many variables involved rather than a strictly scientific method.
+A continuously updated collection of DCTLs (DaVinci Color Transform Language) designed to enhance and educate on workflows using ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs offers a photographic and creative approach to color correction and grading from log digital and film negatives, emphasizing the artistic tweaking of the many variables involved rather than a strictly scientific method.
   
 Installation and utils
 ---------
@@ -78,7 +78,7 @@ For added convenience, the run.sh script is provided, enabling easy access to va
 
 ![MS-Cineon-Exposure figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure.dctl")
 
-Cineon exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
+Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
 
@@ -88,15 +88,15 @@ Cineon exposure from photographic stops, incorporating a false color to aid in a
 
 ![MS-Cineon-Invert.dctl figure](resources/MS-Cineon-Invert.png "MS-Cineon-Invert.dctl")
 
-The Cineon negative inversion tool allows for precise control over the inversion process using adjustable parameters such as density, bit depth, offset, and density scale. You can specify Dmin values manually as floating-point numbers (obtained from tools like Pixel Analyzer in Nuke or similar software) or sample them using a rectangular sampler from the border or other Dmin base areas.
+Cineon negative inversion with precise control over the dmin ratio based inversion process using adjustable parameters such as density, bit depth, offset, and density scale. You can specify dmin base values manually as floating-point numbers (obtained from tools like Pixel Analyzer in Nuke or similar software) or sample them using a rectangular sampler from the border or other dmin base areas.
 
 #### ACES scene-linear and calibration curves
 
-To account for the effects of film stock and the use of various ECN-2 chemicals, developer time and temperature, camera and lightbox settings - calibration curves are applied to match ideal cineon code values. In this example, photoscanning was used along with the rawtoaces tool to convert the Camera RAW CR2 file to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
+To account for the variations of film stock and the use of ECN-2 chemicals, developer time and temperature, camera and lightbox settings - calibration curves are applied to match ideal cineon code values. In this example, photoscanning was used along with the rawtoaces tool to convert the Camera RAW CR2 file to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
 
 ![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
-Color calibration curves and log cineon code value macbeth charts at different exposures.
+Color calibration curves and macbeth charts at different exposures for adjustments.
 
 **DCTL script**
 
@@ -126,7 +126,7 @@ Made for print emulation, this DCTL applies DaVinci Resolve's built-in film look
 
 ![MS-LogC3-Exposure.dctl figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure.dctl")
 
-LogC3 exposure from photographic stops, incorporating a false color to aid in achieving correct exposure levels.
+LogC3 exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
 
