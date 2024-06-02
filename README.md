@@ -35,7 +35,7 @@ Table of Contents
 Introduction
 ---------
 
-A collection of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing workflows using ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs are designed for photographers and cinematographers seeking a photographic approach to color correction and grading from log digital and film negatives.
+A collection of continuously updated DCTLs (DaVinci Color Transform Language), primarily aimed at enhancing and learning about workflows using ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs are designed for photographers and cinematographers seeking a photographic and creative approach to color correction and grading from log digital and film negatives.
   
 Installation and utils
 ---------
@@ -44,7 +44,7 @@ To use these tools into your DaVinci Resolve setup, begin by cloning the git rep
 
 Run `./build.sh` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL`
 
-For added convenience, the open.sh script is provided, enabling easy access to various resources:
+For added convenience, the run.sh script is provided, enabling easy access to various resources:
 
 **To open the DCTL readme documentation, use:**
 
