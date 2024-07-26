@@ -4,7 +4,7 @@
 
 // clang-format off
 DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
-DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV-3, EV-2, EV-1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
+DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
@@ -15,11 +15,11 @@ DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
 // ev stops
 __DEVICE__ float evstops(int ev) {
-    if (ev == EV-3) {
+    if (ev == EV_3) {
         return -3.0f;
-    } else if (ev == EV-2) {
+    } else if (ev == EV_2) {
         return -2.0f;
-    } else if (ev == EV-1) {
+    } else if (ev == EV_1) {
         return -1.0f;
     } else if (ev == EV0) {
         return 0.0f;
@@ -73,8 +73,6 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         if (p_Y >= startY && p_Y < startY + barheight && p_X >= startX && p_X < endX) {
             int width = legendwidth / cineon_stops;
             int index = (p_X - startX) / width;
-            int x = (p_X - startX) % width;
-            int y = p_Y - startY;
             if (index >= 0 && index < cineon_stops) {
                 return make_float3(cineon_colors[index].r, cineon_colors[index].g, cineon_colors[index].b);
             }

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 ##  Copyright 2022-present Contributors to the dctl project.
 ##  SPDX-License-Identifier: BSD-3-Clause
 ##  https://github.com/mikaelsundell/dctl
@@ -9,34 +10,34 @@ import shutil
 import datetime
 import subprocess
 
-def is_windows():
-    return os.name == 'nt'
+def is_mac():
+    return sys.platform == 'darwin'
 
 def run_log():
-    if is_windows():
-        log_file = os.path.expanduser(r"~\AppData\Roaming\Blackmagic Design\DaVinci Resolve\Support\logs\davinci_resolve.log")
-    else:
+    if is_mac():
         log_file = os.path.expanduser("~/Library/Application Support/Blackmagic Design/DaVinci Resolve/logs/davinci_resolve.log")
+    else:
+        log_file = os.path.expanduser(r"~\AppData\Roaming\Blackmagic Design\DaVinci Resolve\Support\logs\davinci_resolve.log")
     
     if os.path.isfile(log_file):
-        if is_windows():
-            os.system('cls')
-        else:
+        if is_mac():
             os.system('clear')
-        print("Starting to trace the log file...")
-        if is_windows():
-            subprocess.run(['powershell', '-Command', f"Get-Content -Path '{log_file}' -Wait"])
         else:
+            os.system('cls')
+        print("Starting to trace the log file...")
+        if is_mac():
             subprocess.run(['tail', '-f', log_file])
+        else:
+            subprocess.run(['powershell', '-Command', f"Get-Content -Path '{log_file}' -Wait"])
     else:
         print("Log file does not exist, make sure Davinci Resolve is installed.")
         sys.exit(1)
 
 def run_readme():
-    if is_windows():
-        readme_file = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\DaVinciCTL\README.txt"
-    else:
+    if is_mac():
         readme_file = "/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/DaVinciCTL/README.txt"
+    else:
+        readme_file = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\DaVinciCTL\README.txt"
     
     if os.path.isfile(readme_file):
         if is_windows():
@@ -48,25 +49,25 @@ def run_readme():
         sys.exit(1)
 
 def run_examples():
-    if is_windows():
-        examples_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\DaVinciCTL"
-    else:
+    if is_mac():
         examples_dir = "/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/DaVinciCTL"
+    else:
+        examples_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\DaVinciCTL"
     
     if os.path.isdir(examples_dir):
-        if is_windows():
-            os.startfile(examples_dir)
-        else:
+        if is_mac():
             subprocess.run(['open', examples_dir])
+        else:
+            os.startfile(examples_dir)
     else:
         print("Examples directory does not exist.")
         sys.exit(1)
 
 def run_install():
-    if is_windows():
-        target_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL"
-    else:
+    if is_mac():
         target_dir = "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL"
+    else:
+        target_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL"
     
     if not os.path.isdir(target_dir):
         print(f"Target directory {target_dir} does not exist. Creating the directory.")
@@ -81,10 +82,10 @@ def run_install():
         print(f"Copied {file} to {target_dir}")
 
 def run_snapshot():
-    if is_windows():
-        target_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL"
-    else:
+    if is_mac():
         target_dir = "/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL"
+    else:
+        target_dir = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL"
     
     date_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     archive_name = f"DCTL_{date_time}.tar.gz"
