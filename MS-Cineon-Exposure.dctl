@@ -4,22 +4,22 @@
 
 // clang-format off
 DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
-DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
+DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV-3, EV-2, EV-1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
 // headers
-#include "MS-Cineon.h"
 #include "MS-Utils.h"
+#include "MS-Cineon.h"
 
 // ev stops
 __DEVICE__ float evstops(int ev) {
-    if (ev == EV_3) {
+    if (ev == EV-3) {
         return -3.0f;
-    } else if (ev == EV_2) {
+    } else if (ev == EV-2) {
         return -2.0f;
-    } else if (ev == EV_1) {
+    } else if (ev == EV-1) {
         return -1.0f;
     } else if (ev == EV0) {
         return 0.0f;
@@ -41,7 +41,7 @@ __DEVICE__ float3 cineon_color(float3 input_rgb, int ev) {
     for (unsigned long i = 0; i < cineon_stops; i++) {
         colors[i] = cineon_colors[i];
         float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
-        float3 log = min(cv.lin_cineon(make_float3(lin, lin, lin)), 1.0f);
+        float3 log = minf3(cv.lin_cineon(make_float3(lin, lin, lin)), 1.0f);
         colors[i].stop = log.x;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
@@ -59,7 +59,7 @@ __DEVICE__ float3 cineon_color(float3 input_rgb, int ev) {
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    rgb = max(lin_cineon(cineon_lin(rgb) * pow(2.0, exposure)), 0.0f);
+    rgb = maxf3(lin_cineon(cineon_lin(rgb) * pow(2.0f, exposure)), 0.0f);
     if (showcolors > 0) {
         rgb = cineon_color(rgb, ev);
     }

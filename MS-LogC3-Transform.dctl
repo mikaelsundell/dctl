@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/dctl
 
-DEFINE_UI_PARAMS(transform, Transform, DCTLUI_COMBO_BOX, 0, {LIN_LOGC3, LOGC3_LIN}, {Convert linear to LogC3, Convert LogC3 to Linear})
+DEFINE_UI_PARAMS(transform, Transform, DCTLUI_COMBO_BOX, 0, {LINLOGC3, LOGC3LIN}, {Convert linear to LogC3, Convert LogC3 to Linear})
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
 
 // headers
@@ -13,9 +13,9 @@ DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320,
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    if (transform == LIN_LOGC3) {
+    if (transform == LINLOGC3) {
         rgb = lin_logC3(rgb, ei);
-    } else if (transform == LOGC3_LIN) {
+    } else if (transform == LOGC3LIN) {
         rgb = logC3_lin(rgb, ei);
     }
     return rgb;

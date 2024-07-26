@@ -13,6 +13,6 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
     Matrix strip = {1, 0, 0, 0, 1, 0, 0, 1, };
-    float3 result = mix(rgb, multiply_matrix(rgb, strip), stripify / 100);
+    float3 result = mix3f(rgb, multiply_matrix(rgb, strip), stripify / 100);
     return result;
 }

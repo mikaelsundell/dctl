@@ -17,7 +17,40 @@ typedef struct {
     float m06, m07, m08;
 } Matrix;
 
-// Multiply float3 by matrix
+// Float3 math
+__DEVICE__ float3 logf3(float3 value) {
+    return make_float3(log(value.x), log(value.y), log(value.z));
+}
+
+__DEVICE__ float3 log10f3(float3 value) {
+    return make_float3(log10(value.x), log10(value.y), log10(value.z));
+}
+
+__DEVICE__ float3 powf3(float3 value, float m) {
+    return make_float3(pow(value.x, m), pow(value.y, m), pow(value.z, m));
+}
+
+__DEVICE__ float3 minf3(float3 value, float m) {
+    return make_float3(min(value.x, m), min(value.y, m), min(value.z, m));
+}
+
+__DEVICE__ float3 maxf3(float3 value, float m) {
+    return make_float3(max(value.x, m), max(value.y, m), max(value.z, m));
+}
+
+__DEVICE__ float mixf(float x, float y, float a) {
+    return x * (1.0 - a) + y * a;
+}
+
+__DEVICE__ float3 mix3f(float3 x, float3 y, float a) {
+    return make_float3(
+        x.x * (1.0 - a) + y.x * a,
+        x.y * (1.0 - a) + y.y * a,
+        x.z * (1.0 - a) + y.z * a
+    );
+}
+
+// Matrix math
 __DEVICE__ float3 multiply_matrix(float3 value, Matrix mat) {
     float3 result = make_float3(
         mat.m00 * value.x + mat.m01 * value.y + mat.m02 * value.z,
@@ -170,5 +203,5 @@ __DEVICE__ float3 adjust_luma_rec601(float3 rgb, float l)
 // Adjust for display
 __DEVICE__ float3 adjust_display(float3 rgb)
 {
-    return max(rgb, 0.0f);;
+    return maxf3(rgb, 0.0f);;
 }
