@@ -80,7 +80,7 @@ __DEVICE__ CineonCurve cineon_curve() {
     return cv;
 }
 
-// Convert invert to Cineon
+// Invert Negative to Cineon
 __DEVICE__ float3 invert_cineon(float3 rgb, float3 scale, float3 dmin) {
     CineonCurve cv = cineon_curve();
     return cv.invert_cineon(rgb, scale, dmin);

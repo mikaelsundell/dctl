@@ -42,32 +42,38 @@ Installation and utils
 
 To use these tools into your DaVinci Resolve setup, begin by cloning the git repository, which contains the DCTLs and headers.
 
-Run `./build.sh` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL`
+Run `python(.exe) run.py install` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL` on Mac and `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL`on Windows.
 
-For added convenience, the run.sh script is provided, enabling easy access to various resources:
+For added convenience, the run.py script is provided, enabling easy access to various resources:
 
 **To open the DCTL readme documentation, use:**
 
 ```shell
-./run.sh readme
+./run.py readme
 ````
 
 **For exploring DCTL examples, execute:**
 
 ```shell
-./run.sh examples
+./run.py examples
 ````
 
 **To access the DaVinci Resolve log file and initiate a trace, input:**
 
 ```shell
-./run.sh log
+./run.py install
+````
+
+**To install *.dctl and *.h into DCTL directory:**
+
+```shell
+./run.py log
 ````
 
 **To make a snapshot of hte DaVinvi Resolve DCTL folder, input:**
 
 ```shell
-./run.sh snapshot
+./run.py snapshot
 ````
 
 # DCTLs
@@ -94,7 +100,7 @@ Cineon negative inversion with precise control over the dmin ratio based inversi
 
 To account for the variations of film stock and the use of ECN-2 chemicals, developer time and temperature, camera and lightbox settings - calibration curves are applied to match ideal cineon code values. In this example, photoscanning was used along with the rawtoaces tool to convert the Camera RAW CR2 file to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
 
-![MS-LogC3-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
+![MS-Cineon-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
 Color calibration curves and macbeth charts at different exposures for adjustments.
 
@@ -154,33 +160,39 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 ### Film Grain.dctl
 
-- https://github.com/thatcherfreeman/utility-dctls
+- https://github.com/thatcherfreeman/utility-dctls/blob/main/Effects/Film%20Grain.dctl
 
 ### Printer Lights.dctl
 
-- https://github.com/thatcherfreeman/utility-dctls
+- https://github.com/thatcherfreeman/utility-dctls/blob/main/Utilities/Printer%20Lights.dctl
 
 ### TetraInterp.dctl
 
-- Copyright © 2021 calvinsilly, Ember Light, Nick Eason
+-  https://github.com/hotgluebanjo/TetraInterp-DCTL/blob/master/TetraInterp.dctl
 
 ### TetraInterpHSV.dctl
 
-- Copyright © 2021 calvinsilly, Ember Light, Nick Eason
+- https://github.com/hotgluebanjo/TetraInterp-DCTL/blob/master/TetraInterpHSV.dctl
 
 ## Reference charts
 
+ - ACES Macbeth 50D 5203 EXR exr from rawtoaces
+
+![logctool_LogC3_DCI_2K figure](resources/macbeth_50D_5203.png "Macbeth 50D 5203 EXR")
+
+- Download: [macbeth_50D_5203.exr](resources/macbeth_50D_5203.exr)
+
 ARRI LogC3 10-bit DPX
 
-![logctool_LogC3_DCI_2K figure](resources/logctool_LogC3_DCI_2K.png "MS-Cineon-Exposure")
+![logctool_LogC3_DCI_2K figure](resources/logctool_LogC3_DCI_2K.png "ARRI LogC3 10-bit DPX")
 
-- [logctool_LogC3_DCI_2K.dpx](resources/logctool_LogC3_DCI_2K.dpx)
+- Download: [logctool_LogC3_DCI_2K.dpx](resources/logctool_LogC3_DCI_2K.dpx)
 
 Cineon 10-bit DPX
 
-![logctool_LogC3_to_Cineon_DCI_2K figure](resources/logctool_LogC3_to_Cineon_DCI_2K.png "MS-Cineon-Exposure")
+![logctool_LogC3_to_Cineon_DCI_2K figure](resources/logctool_LogC3_to_Cineon_DCI_2K.png "Cineon 10-bit DPX")
 
-- [logctool_LogC3_to_Cineon_DCI_2K.dpx](resources/logctool_LogC3_to_Cineon_DCI_2K.dpx)
+- Download: [logctool_LogC3_to_Cineon_DCI_2K.dpx](resources/logctool_LogC3_to_Cineon_DCI_2K.dpx)
 
 Logctool project:
 
