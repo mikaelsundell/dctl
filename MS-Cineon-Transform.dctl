@@ -5,7 +5,7 @@
 DEFINE_UI_PARAMS(transform, Transform, DCTLUI_COMBO_BOX, 0, {LINCINEON, CINEONLIN}, {Convert linear to Cineon, Convert Cineon to Linear})
 
 // headers
-#include "MS-Utils.h"
+#include "MS-Common.h"
 #include "MS-Cineon.h"
 
 // transform

@@ -21,7 +21,7 @@ DEFINE_UI_PARAMS(dminmethod, Dmin method, DCTLUI_COMBO_BOX, 0, {DMINRGB, SAMPLER
 DEFINE_UI_PARAMS(samplercolor, Sampler color, DCTLUI_COMBO_BOX, 0, {WHITE, BLACK, RED, GREEN, BLUE}, {White, Black, Red, Green, Blue})
 
 // headers
-#include "MS-Utils.h"
+#include "MS-Common.h"
 #include "MS-Cineon.h"
 
 __DEVICE__ inline float3 pixel(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, int p_X, int p_Y)
@@ -76,10 +76,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
     curve.density = density;
     curve.bitdepth = bitdepth;
     curve.offset = offset;
+    rgb = curve.invert_cineon(rgb, scale, dmin);
     if (adjustdisplay) {
-        rgb = adjust_display(curve.invert_cineon(rgb, scale, dmin));
-    } else {
-        rgb = adjust_display(curve.invert_cineon(rgb, scale, dmin));
+        rgb = adjust_display(rgb);
     }
 
     if (showsampler && dminmethod == SAMPLER) {

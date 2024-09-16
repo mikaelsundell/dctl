@@ -6,7 +6,7 @@
 DEFINE_UI_PARAMS(saturation, Saturation, DCTLUI_SLIDER_FLOAT, 50, 0, 100, 1);
 
 // headers
-#include "MS-Utils.h"
+#include "MS-Common.h"
 
 // transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)

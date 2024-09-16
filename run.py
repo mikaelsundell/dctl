@@ -40,10 +40,10 @@ def run_readme():
         readme_file = r"C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\DaVinciCTL\README.txt"
     
     if os.path.isfile(readme_file):
-        if is_windows():
-            os.startfile(readme_file)
-        else:
+        if is_mac():
             subprocess.run(['open', readme_file])
+        else:
+            os.startfile(readme_file)
     else:
         print("README file does not exist.")
         sys.exit(1)
@@ -99,7 +99,7 @@ def run_snapshot():
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python script.py {log|readme|examples|snapshot}")
+        print("Usage: python script.py {log|readme|examples|install|snapshot}")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -114,7 +114,7 @@ def main():
     elif command == 'snapshot':
         run_snapshot()
     else:
-        print("Usage: python script.py {log|readme|examples|snapshot}")
+        print("Usage: python script.py {log|readme|examples|install|snapshot}")
         sys.exit(1)
 
 if __name__ == "__main__":

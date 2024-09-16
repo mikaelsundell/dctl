@@ -56,6 +56,20 @@ struct LogC3Curve
     }
 };
 
+// LogC3 colorspace
+struct LogC3Colorspace
+{
+    Matrix logC3_matrix;
+    Matrix xyz_matrix;
+
+    __DEVICE__ float3 xyz_logC3(float3 xyz) {
+        return mult_matrix(xyz, logC3_matrix);
+    }
+    __DEVICE__ float3 logC3_xyz(float3 logC3) {
+        return mult_matrix(logC3, xyz_matrix);
+    }
+};
+
 __DEVICE__ LogC3Curve logC3_curve(int ei) {
     LogC3Curve cv;
     if (ei == EI160) {
@@ -84,16 +98,33 @@ __DEVICE__ LogC3Curve logC3_curve(int ei) {
     return cv;
 }
 
+__DEVICE__ LogC3Colorspace logC3_colorspace() {
+    LogC3Colorspace cs;
+    cs.logC3_matrix = {1.789066, -0.482534, -0.200076, -0.639849, 1.396400, 0.194432 -0.041532, -0.041532, 0.082335, 0.878868}; 
+    cs.xyz_matrix = {0.638008, 0.214704, 0.097744, 0.291954, 0.823841, -0.115795, 0.002798, -0.067034, 1.153294}; 
+    return cs;
+}
+
 // Convert linear to LogC3
 __DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
-
     LogC3Curve cv = logC3_curve(ei);
     return make_float3(cv.lin_logC3(rgb.x), cv.lin_logC3(rgb.y), cv.lin_logC3(rgb.z));
 }
 
 // Convert LogC3 to linear
 __DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
-
     LogC3Curve cv = logC3_curve(ei);
     return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
+}    
+
+// Convert LogC3 to xyz
+__DEVICE__ float3 xyz_logC3(float3 rgb) {
+    LogC3Colorspace cs = logC3_colorspace();
+    return cs.xyz_logC3(rgb);
+}
+
+// Convert XYZ to LogC3
+__DEVICE__ float3 logC3_xyz(float3 rgb) {
+    LogC3Colorspace cs = logC3_colorspace();
+    return cs.logC3_xyz(rgb);
 }    

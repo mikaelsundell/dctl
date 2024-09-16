@@ -176,7 +176,7 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 ## Reference charts
 
- - ACES Macbeth 50D 5203 EXR exr from rawtoaces
+ - ACES Macbeth 50D 5203 EXR from rawtoaces
 
 ![logctool_LogC3_DCI_2K figure](resources/macbeth_50D_5203.png "Macbeth 50D 5203 EXR")
 

@@ -10,7 +10,7 @@ DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
 // headers
-#include "MS-Utils.h"
+#include "MS-Common.h"
 #include "MS-Cineon.h"
 
 // ev stops

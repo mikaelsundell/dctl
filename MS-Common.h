@@ -51,7 +51,7 @@ __DEVICE__ float3 mix3f(float3 x, float3 y, float a) {
 }
 
 // Matrix math
-__DEVICE__ float3 multiply_matrix(float3 value, Matrix mat) {
+__DEVICE__ float3 mult_matrix(float3 value, Matrix mat) {
     float3 result = make_float3(
         mat.m00 * value.x + mat.m01 * value.y + mat.m02 * value.z,
         mat.m03 * value.x + mat.m04 * value.y + mat.m05 * value.z,

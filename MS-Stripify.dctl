@@ -6,13 +6,13 @@
 DEFINE_UI_PARAMS(stripify, Stripify, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 
 // headers
-#include "MS-Utils.h"
+#include "MS-Common.h"
 
 // transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    Matrix strip = {1, 0, 0, 0, 1, 0, 0, 1, };
-    float3 result = mix3f(rgb, multiply_matrix(rgb, strip), stripify / 100);
+    Matrix strip = {1, 0, 0, 0, 1, 0, 0, 1, 0};
+    float3 result = mix3f(rgb, mult_matrix(rgb, strip), stripify / 100);
     return result;
 }
