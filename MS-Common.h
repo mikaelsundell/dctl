@@ -26,6 +26,10 @@ __DEVICE__ float3 log10f3(float3 value) {
     return make_float3(log10(value.x), log10(value.y), log10(value.z));
 }
 
+__DEVICE__ float3 pow10f3(float3 value) {
+    return make_float3(pow(10.0, value.x), pow(10.0, value.y), pow(10.0, value.z));
+}
+
 __DEVICE__ float3 powf3(float3 value, float m) {
     return make_float3(pow(value.x, m), pow(value.y, m), pow(value.z, m));
 }
@@ -48,6 +52,12 @@ __DEVICE__ float3 mix3f(float3 x, float3 y, float a) {
         x.y * (1.0 - a) + y.y * a,
         x.z * (1.0 - a) + y.z * a
     );
+}
+
+__DEVICE__ float3 div3f(float3 x, float3 y) {
+    float3 eps = make_float3(1e-7, 1e-7, 1e-7);
+    float3 ey = max(y, eps);
+    return x / ey;
 }
 
 // Matrix math
@@ -199,6 +209,15 @@ __DEVICE__ float3 adjust_luma_rec601(float3 rgb, float l)
     float3 result = make_float3(rgb.x + diff, rgb.y + diff, rgb.z + diff);
     return result;
 }
+
+// Adjust to luma in rec709
+__DEVICE__ float3 adjust_luma_rec709(float3 rgb, float l)
+{
+    float diff = l - luma_rec709(rgb);
+    float3 result = make_float3(rgb.x + diff, rgb.y + diff, rgb.z + diff);
+    return result;
+}
+
 
 // Adjust for display
 __DEVICE__ float3 adjust_display(float3 rgb)

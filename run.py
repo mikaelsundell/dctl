@@ -76,8 +76,9 @@ def run_install():
     current_dir = os.getcwd()
     h_files = glob.glob(os.path.join(current_dir, '*.h'))
     dctl_files = glob.glob(os.path.join(current_dir, '*.dctl'))
+    lut_files = glob.glob(os.path.join(current_dir, '*.cube'))
     
-    for file in h_files + dctl_files:
+    for file in h_files + dctl_files + lut_files:
         shutil.copy(file, target_dir)
         print(f"Copied {file} to {target_dir}")
 

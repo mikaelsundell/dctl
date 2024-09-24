@@ -17,6 +17,7 @@ DEFINE_UI_PARAMS(samplerw, Sampler width, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
 DEFINE_UI_PARAMS(samplerh, Sampler height, DCTLUI_SLIDER_FLOAT, 20, 1, 100, 1);
 DEFINE_UI_PARAMS(showsampler, Show sampler, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(cineonmethod, Cineon method, DCTLUI_COMBO_BOX, 0, {INVERSE, REVERSE}, {Inverse, Reverse})
 DEFINE_UI_PARAMS(dminmethod, Dmin method, DCTLUI_COMBO_BOX, 0, {DMINRGB, SAMPLER}, {Density dmin RGB, Sampler})
 DEFINE_UI_PARAMS(samplercolor, Sampler color, DCTLUI_COMBO_BOX, 0, {WHITE, BLACK, RED, GREEN, BLUE}, {White, Black, Red, Green, Blue})
 
@@ -76,7 +77,12 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
     curve.density = density;
     curve.bitdepth = bitdepth;
     curve.offset = offset;
-    rgb = curve.invert_cineon(rgb, scale, dmin);
+
+    if (cineonmethod == INVERSE) {
+        rgb = curve.invert_cineon(rgb, scale, dmin);
+    } else {
+        rgb = curve.reverse_cineon(rgb, scale, dmin);
+    }
     if (adjustdisplay) {
         rgb = adjust_display(rgb);
     }
