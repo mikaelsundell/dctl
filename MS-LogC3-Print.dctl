@@ -8,7 +8,6 @@ DEFINE_UI_PARAMS(colorblend, Colors blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 
-// LUT definitions for Metal and CUDA
 #ifdef DEVICE_IS_METAL
     DEFINE_LUT(LUTMETAL0_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
     DEFINE_LUT(LUTMETAL1_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D60.cube)
@@ -25,13 +24,20 @@ DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
     DEFINE_LUT(LUTMETAL5_DCIP3, ../Film Looks/DCI-P3 Kodak 2383 D65.cube)
     DEFINE_LUT(LUTMETAL6_DCIP3, ./ARRI_LogC2Video_P3DCI_davinci3d_33.cube)
 #else
-    DEFINE_LUT(LUTCUDA0, ..\Film Looks\Rec709 Fujifilm 3513DI D55.cube)
-    DEFINE_LUT(LUTCUDA1, ..\Film Looks\Rec709 Fujifilm 3513DI D60.cube)
-    DEFINE_LUT(LUTCUDA2, ..\Film Looks\Rec709 Fujifilm 3513DI D65.cube)F
-    DEFINE_LUT(LUTCUDA3, ..\Film Looks\Rec709 Kodak 2383 D55.cube)
-    DEFINE_LUT(LUTCUDA4, ..\Film Looks\Rec709 Kodak 2383 D60.cube)
-    DEFINE_LUT(LUTCUDA5, ..\Film Looks\Rec709 Kodak 2383 D65.cube)
-    DEFINE_LUT(LUTCUDA6, ..\Arri\ARRI_LogC2Video_709_davinci3d_33.cube)
+    DEFINE_LUT(LUTCUDA0_REC709, ..\Film Looks\Rec709 Fujifilm 3513DI D55.cube)
+    DEFINE_LUT(LUTCUDA1_REC709, ..\Film Looks\Rec709 Fujifilm 3513DI D60.cube)
+    DEFINE_LUT(LUTCUDA2_REC709, ..\Film Looks\Rec709 Fujifilm 3513DI D65.cube)
+    DEFINE_LUT(LUTCUDA3_REC709, ..\Film Looks\Rec709 Kodak 2383 D55.cube)
+    DEFINE_LUT(LUTCUDA4_REC709, ..\Film Looks\Rec709 Kodak 2383 D60.cube)
+    DEFINE_LUT(LUTCUDA5_REC709, ..\Film Looks\Rec709 Kodak 2383 D65.cube)
+    DEFINE_LUT(LUTCUDA6_REC709, .\ARRI_LogC2Video_709_davinci3d_33.cube)
+    DEFINE_LUT(LUTCUDA0_DCIP3, ..\Film Looks\DCI-P3 Fujifilm 3513DI D55.cube)
+    DEFINE_LUT(LUTCUDA1_DCIP3, ..\Film Looks\DCI-P3 Fujifilm 3513DI D60.cube)
+    DEFINE_LUT(LUTCUDA2_DCIP3, ..\Film Looks\DCI-P3 Fujifilm 3513DI D65.cube)
+    DEFINE_LUT(LUTCUDA3_DCIP3, ..\Film Looks\DCI-P3 Kodak 2383 D55.cube)
+    DEFINE_LUT(LUTCUDA4_DCIP3, ..\Film Looks\DCI-P3 Kodak 2383 D60.cube)
+    DEFINE_LUT(LUTCUDA5_DCIP3, ..\Film Looks\DCI-P3 Kodak 2383 D65.cube)
+    DEFINE_LUT(LUTCUDA6_DCIP3, .\ARRI_LogC2Video_P3DCI_davinci3d_33.cube)
 #endif
 
 // utils
@@ -91,9 +97,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         }
     }
     #endif
-    float lum = luma_rec709(rgb);
-    rgb = adjust_luma_rec709(mix3f(rgb, color, colorblend / 100.0), lum);
-    float rgblum = luma_rec709(rgb);
+    float lum = luma_rec601(rgb);
+    rgb = adjust_luma_rec601(mix3f(rgb, color, colorblend / 100.0), lum);
+    float rgblum = luma_rec601(rgb);
     
     float3 contrast;
     #ifdef DEVICE_IS_METAL
@@ -141,8 +147,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         }
     }
     #endif
-    float contrastlum = luma_rec709(contrast);
-    rgb = adjust_luma_rec709(rgb, mixf(rgblum, contrastlum, contrastblend / 100.0));
+    float contrastlum = luma_rec601(contrast);
+    rgb = adjust_luma_rec601(rgb, mixf(rgblum, contrastlum, contrastblend / 100.0));
 
     if (adjustdisplay) {
         rgb = adjust_display(rgb);
