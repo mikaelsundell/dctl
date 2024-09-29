@@ -37,13 +37,12 @@ Introduction
 
 <img src="resources/dctl.jpg" width="100%" style="padding-bottom: 20px;" />
 
-
-A continuously updated collection of DCTLs (DaVinci Color Transform Language) designed to enhance and educate on workflows using ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs offers a photographic and creative approach to color correction and grading from log digital and film negatives, emphasizing the artistic tweaking of the many variables involved rather than a strictly scientific method.
+This is a growing collection of DCTLs (DaVinci Color Transform Language) created to explore and improve workflows with ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs take a more creative and photographic approach to color correction and grading from log digital and film negatives, focusing on artistic adjustments rather than rigid technical processes. As I learn more about home film processing, these DCTLs are continuously updated to reflect new insights and techniques.
   
 Installation and utils
 ---------
 
-To use these tools into your DaVinci Resolve setup, begin by cloning the git repository, which contains the DCTLs and headers.
+To use these tools into your DaVinci Resolve setup, begin by cloning the git repository or download the release package, which contains the DCTLs and headers.
 
 Run `python(.exe) run.py install` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL` on Mac and `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL`on Windows.
 
