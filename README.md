@@ -37,7 +37,7 @@ Introduction
 
 <img src="resources/dctl.jpg" width="100%" style="padding-bottom: 20px;" />
 
-This is a growing collection of DCTLs (DaVinci Color Transform Language) created to explore and improve workflows with ARRI LogC3 and Cineon in DaVinci Resolve. These DCTLs take a more creative and photographic approach to color correction and grading from log digital and film negatives, focusing on artistic adjustments rather than rigid technical processes. As I learn more about home film processing, these DCTLs are continuously updated to reflect new insights and techniques.
+This is a growing collection of DCTLs (DaVinci Color Transform Language) created to understand workflows with ARRI LogC3, Gen5 and Cineon in DaVinci Resolve. These DCTLs take a photographic approach to color correction and grading from log and film negatives, focusing on look adjustments and traditional print techniques rather than rigid technical processes. As I learn more about home film processing, these DCTLs are continuously updated to reflect new insights and techniques.
   
 Installation and utils
 ---------
