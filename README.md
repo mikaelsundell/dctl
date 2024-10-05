@@ -15,10 +15,15 @@ Table of Contents
     - [MS-Cineon-Invert.dctl](#ms-cineon-invertdctl)
       - [Cineon inversion](#cineon-inversion)
       - [ACES scene-linear and calibration curves](#aces-scene-linear-and-calibration-curves)
+    - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl-1)
     - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl)
+    - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl-1)
+  - [Gen5 color processing](#gen5-color-processing)
+    - [MS-Gen5-Transform.dctl](#ms-gen5-transformdctl)
   - [LogC3 color processing](#logc3-color-processing)
     - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
     - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
+    - [MS-LogC3-Temperature.dctl](#ms-logc3-temperaturedctl)
     - [MS-LogC3-Transform.dctl](#ms-logc3-transformdctl)
   - [Utility DCTLs](#utility-dctls)
     - [MS-Stripify.dctl](#ms-stripifydctl)
@@ -104,15 +109,16 @@ To account for the variations of film stock and the use of ECN-2 chemicals, deve
 
 ![MS-Cineon-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
 
-Color calibration curves and macbeth charts at different exposures for adjustments.
-
-**DCTL script**
+Figure: Color calibration curves and macbeth charts at different exposures for adjustments.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
-
-**rawtoaces project**
-
 - https://github.com/AcademySoftwareFoundation/rawtoaces
+
+### MS-Cineon-Exposure.dctl
+
+Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
 
 ### MS-Cineon-Transform.dctl
 
@@ -120,13 +126,27 @@ Cineon conversion to and from linear.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
 
+### MS-Cineon-Transform.dctl
+
+Cineon conversion to and from linear. 
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
+
+## Gen5 color processing
+
+### MS-Gen5-Transform.dctl
+
+Gen5 conversion to and from linear. 
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Gen5-Transform.dctl
+
 ## LogC3 color processing
 
 ### MS-LogC3-Print.dctl
 
 ![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
 
-Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for contrast and color strength.
+Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for luminosity and color blending.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
 
@@ -137,6 +157,12 @@ Made for print emulation, this DCTL applies DaVinci Resolve's built-in film look
 LogC3 exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
+
+### MS-LogC3-Temperature.dctl
+
+LogC3 CAT02 color temperature adjustments.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Temperature.dctl
 
 ### MS-LogC3-Transform.dctl
 

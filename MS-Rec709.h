@@ -66,9 +66,6 @@ __DEVICE__ float3 rec709_lin(float3 rgb, int ei) {
 __DEVICE__ float3 xyz_rec709(float3 rgb) {
     Rec709Colorspace cs = rec709_colorspace();
     float3 rec709 = cs.xyz_rec709(rgb);
-    rec709.x = clamp(rec709.x, 0.0, 1.0);
-    rec709.y = clamp(rec709.y, 0.0, 1.0);
-    rec709.z = clamp(rec709.z, 0.0, 1.0);
     return rec709;
 }
 
