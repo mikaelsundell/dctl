@@ -62,14 +62,6 @@ __DEVICE__ float3 rec709_lin(float3 rgb, int ei) {
     return make_float3(cv.rec709_lin(rgb.x), cv.rec709_lin(rgb.y), cv.rec709_lin(rgb.z));
 }    
 
-
-__DEVICE__ float knee(float value, float knee_point, float max_value) {
-    if (value > knee_point) {
-        return knee_point + (1.0 - (1.0 / (max_value - knee_point))) * (value - knee_point);
-    }
-    return value;
-}
-
 // Convert Rec709 to xyz
 __DEVICE__ float3 xyz_rec709(float3 rgb) {
     Rec709Colorspace cs = rec709_colorspace();
