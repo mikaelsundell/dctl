@@ -58,7 +58,7 @@ struct Grade
     float2 midtones_range = make_float2(0.2, 0.6);
     float2 highlights_range = make_float2(0.45, 1.0);
     // scaling
-    float2 gamma_scale = make_float2(5.0, 0.8);
+    float2 gamma_scale = make_float2(-5.0, -0.8);
 
     __DEVICE__ float3 scale(float3 rgb, float2 scale) {
         float3 result;
@@ -89,7 +89,7 @@ __DEVICE__ float apply_grading(float rgb, float blackpoint, float whitepoint, fl
     float scaled = (rgb - blackpoint) / (whitepoint - blackpoint);
     float lifted = scaled * multiply * (gain - lift) + lift;
     float final_offset = lifted + offset;
-    return pow(final_offset, 1.0 + (gamma * -1));
+    return pow(final_offset, 1.0 + (gamma));
 }
 
 __DEVICE__ float3 grade(float3 rgb, Grade gr) {{}
