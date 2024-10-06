@@ -1,0 +1,120 @@
+// Copyright 2024-present Contributors to the dctl project.
+// SPDX-License-Identifier: BSD-3-Clause
+// https://github.com/mikaelsundell/dctl
+
+// clang-format off
+DEFINE_UI_PARAMS(blackpoint_r, Black Point R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(blackpoint_g, Black Point G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(blackpoint_b, Black Point B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(whitepoint_r, White Point R, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(whitepoint_g, White Point G, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(whitepoint_b, White Point B, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(lift_r, Lift R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(lift_g, Lift G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(lift_b, Lift B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(gain_r, Gain R, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(gain_g, Gain G, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(gain_b, Gain B, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(multiply_r, Multiply R, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(multiply_g, Multiply G, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(multiply_b, Multiply B, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 2.0, 0.01);
+DEFINE_UI_PARAMS(offset_r, Offset R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(offset_g, Offset G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(offset_b, Offset B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(gamma_r, Gamma R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(gamma_g, Gamma G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(gamma_b, Gamma B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+
+DEFINE_UI_PARAMS(shadows_r, Shadows R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(shadows_g, Shadows G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(shadows_b, Shadows B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+
+DEFINE_UI_PARAMS(midtones_r, Midtones R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(midtones_g, Midtones G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(midtones_b, Midtones B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+
+DEFINE_UI_PARAMS(highlights_r, Highlights R, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(highlights_g, Highlights G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+DEFINE_UI_PARAMS(highlights_b, Highlights B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
+
+// headers
+#include "MS-Common.h"
+
+// Grade
+struct Grade
+{
+    float3 blackpoint;
+    float3 whitepoint;
+    float3 lift;
+    float3 gain;
+    float3 multiply;
+    float3 offset;
+    float3 gamma;
+    float3 shadows;
+    float3 midtones;
+    float3 highlights;
+    // ranges
+    float2 shadows_range = make_float2(0.0, 0.4);
+    float2 midtones_range = make_float2(0.2, 0.6);
+    float2 highlights_range = make_float2(0.45, 1.0);
+    // scaling
+    float2 gamma_scale = make_float2(5.0, 0.8);
+
+    __DEVICE__ float3 scale(float3 rgb, float2 scale) {
+        float3 result;
+        result.r = (rgb.r < 0.0) ? rgb.r * scale.x : rgb.r * scale.y;
+        result.g = (rgb.g < 0.0) ? rgb.g * scale.x : rgb.g * scale.y;
+        result.b = (rgb.b < 0.0) ? rgb.b * scale.x : rgb.b * scale.y;
+        return result;
+    }
+};
+
+__DEVICE__ float interpolate_highlights(float rgb, float value, float begin, float end) {
+    float t = clamp((rgb - begin) / (end - begin), 0.0, 1.0);
+    return rgb + value * (t * t * (3.0 - 2.0 * t));
+}
+
+__DEVICE__ float interpolate_midtones(float rgb, float value, float begin, float end) {
+    float t = clamp((rgb - begin) / (end - begin), 0.0, 1.0);
+    float bump = (t * (1.0 - t));
+    return rgb + value * bump * bump * 3;
+}
+
+__DEVICE__ float interpolate_shadows(float rgb, float value, float begin, float end) {
+    float t = clamp((rgb - begin) / (end - begin), 0.0, 1.0);
+    return rgb + value * (1.0 - t * t * (3.0 - 2.0 * t));
+}
+
+__DEVICE__ float apply_grading(float rgb, float blackpoint, float whitepoint, float lift, float gain, float multiply, float offset, float gamma) {
+    float scaled = (rgb - blackpoint) / (whitepoint - blackpoint);
+    float lifted = scaled * multiply * (gain - lift) + lift;
+    float final_offset = lifted + offset;
+    return pow(final_offset, 1.0 + (gamma * -1));
+}
+
+__DEVICE__ float3 grade(float3 rgb, Grade gr) {{}
+    for(int i=0; i<3; i++) {
+        rgb[i] = interpolate_highlights(rgb[i], gr.highlights[i], gr.highlights_range.x, gr.highlights_range.y);
+        rgb[i] = interpolate_midtones(rgb[i], gr.midtones[i], gr.midtones_range.x, gr.midtones_range.y);
+        rgb[i] = interpolate_shadows(rgb[i], gr.shadows[i], gr.shadows_range.x, gr.shadows_range.y);
+        rgb[i] = apply_grading(rgb[i], gr.blackpoint[i], gr.whitepoint[i], gr.lift[i], gr.gain[i], gr.multiply[i], gr.offset[i], gr.gamma[i]);
+    }
+    return rgb;
+}
+
+// transform
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    Grade gr;
+    gr.whitepoint = make_float3(whitepoint_r, whitepoint_g, whitepoint_b);
+    gr.blackpoint = make_float3(blackpoint_r, blackpoint_g, blackpoint_b);
+    gr.lift = make_float3(lift_r, lift_g, lift_b);
+    gr.gain = make_float3(gain_r, gain_g, gain_b);
+    gr.multiply = make_float3(multiply_r, multiply_g, multiply_b);
+    gr.offset = make_float3(offset_r, offset_g, offset_b);
+    gr.gamma = gr.scale(make_float3(gamma_r, gamma_g, gamma_b), gr.gamma_scale);
+    gr.shadows = make_float3(shadows_r, shadows_g, shadows_b);
+    gr.midtones = make_float3(midtones_r, midtones_g, midtones_b);
+    gr.highlights = make_float3(highlights_r, highlights_g, highlights_b);
+    float3 rgb = grade(make_float3(p_R, p_G, p_B), gr);
+    return rgb;
+}

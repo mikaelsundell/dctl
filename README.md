@@ -26,10 +26,10 @@ Table of Contents
     - [MS-LogC3-Temperature.dctl](#ms-logc3-temperaturedctl)
     - [MS-LogC3-Transform.dctl](#ms-logc3-transformdctl)
   - [Utility DCTLs](#utility-dctls)
+    - [MS-Grade.dctl](#ms-gradedctl)
     - [MS-Stripify.dctl](#ms-stripifydctl)
     - [MS-Saturation.dctl](#ms-saturationdctl)
   - [DCTLs from other projects](#dctls-from-other-projects)
-    - [Film Grain.dctl](#film-graindctl)
     - [Printer Lights.dctl](#printer-lightsdctl)
     - [TetraInterp.dctl](#tetrainterpdctl)
     - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
@@ -42,7 +42,7 @@ Introduction
 
 <img src="resources/dctl.jpg" width="100%" style="padding-bottom: 20px;" />
 
-This is a growing collection of DCTLs (DaVinci Color Transform Language) created to understand workflows with ARRI LogC3, Gen5 and Cineon in DaVinci Resolve. These DCTLs take a photographic approach to color correction and grading from log and film negatives, focusing on look adjustments and traditional print techniques rather than rigid technical processes. As I learn more about home film processing, these DCTLs are continuously updated to reflect new insights and techniques.
+This is a growing collection of DCTLs (DaVinci Color Transform Language) created to understand workflows with ARRI LogC3, Gen5 and Cineon in DaVinci Resolve. These DCTLs take a photographic approach to color correction and grading from log and film negatives, focusing on look adjustments and traditional print techniques rather than rigid technical processes. The project is continually updated to incorporate new insights and techniques.
   
 Installation and utils
 ---------
@@ -172,6 +172,12 @@ LogC3 conversion to and from linear.
 
 ## Utility DCTLs
 
+### MS-Grade.dctl
+
+Grade adjustments, this DCTL is experimental code for lift, gamma, gain and log controls.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
+
 ### MS-Stripify.dctl
 
 Matrix adjustments, this DCTL simplifies the color palette by pushing colors into a warm and cool strip.
@@ -185,10 +191,6 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Saturation.dctl
 
 ## DCTLs from other projects
-
-### Film Grain.dctl
-
-- https://github.com/thatcherfreeman/utility-dctls/blob/main/Effects/Film%20Grain.dctl
 
 ### Printer Lights.dctl
 
