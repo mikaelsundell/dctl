@@ -176,7 +176,7 @@ LogC3 conversion to and from linear.
 
 Grade adjustments, this DCTL is experimental code for lift, gamma, gain and log controls.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Grade.dctl
 
 ### MS-Stripify.dctl
 
