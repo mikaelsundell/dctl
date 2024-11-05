@@ -55,8 +55,8 @@ __DEVICE__ float3 mix3f(float3 x, float3 y, float a) {
 }
 
 __DEVICE__ float3 div3f(float3 x, float3 y) {
-    float3 eps = make_float3(1e-7, 1e-7, 1e-7);
-    float3 ey = _fmaxf(y, eps);
+    float eps = 1e-7f;
+    float3 ey = make_float3(fmax(y.x, eps), fmax(y.y, eps), fmax(y.z, eps));
     return x / ey;
 }
 
