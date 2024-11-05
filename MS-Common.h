@@ -19,27 +19,27 @@ typedef struct {
 
 // Float3 math
 __DEVICE__ float3 logf3(float3 value) {
-    return make_float3(log(value.x), log(value.y), log(value.z));
+    return make_float3(_logf(value.x), _logf(value.y), _logf(value.z));
 }
 
 __DEVICE__ float3 log10f3(float3 value) {
-    return make_float3(log10(value.x), log10(value.y), log10(value.z));
+    return make_float3(_log10f(value.x), _log10f(value.y), _log10f(value.z));
 }
 
 __DEVICE__ float3 pow10f3(float3 value) {
-    return make_float3(pow(10.0, value.x), pow(10.0, value.y), pow(10.0, value.z));
+    return make_float3(_powf(10.0, value.x), _powf(10.0, value.y), _powf(10.0, value.z));
 }
 
 __DEVICE__ float3 powf3(float3 value, float m) {
-    return make_float3(pow(value.x, m), pow(value.y, m), pow(value.z, m));
+    return make_float3(_powf(value.x, m), _powf(value.y, m), _powf(value.z, m));
 }
 
 __DEVICE__ float3 minf3(float3 value, float m) {
-    return make_float3(min(value.x, m), min(value.y, m), min(value.z, m));
+    return make_float3(_fminf(value.x, m), _fminf(value.y, m), _fminf(value.z, m));
 }
 
 __DEVICE__ float3 maxf3(float3 value, float m) {
-    return make_float3(max(value.x, m), max(value.y, m), max(value.z, m));
+    return make_float3(_fmaxf(value.x, m), _fmaxf(value.y, m), _fmaxf(value.z, m));
 }
 
 __DEVICE__ float mixf(float x, float y, float a) {
@@ -56,7 +56,7 @@ __DEVICE__ float3 mix3f(float3 x, float3 y, float a) {
 
 __DEVICE__ float3 div3f(float3 x, float3 y) {
     float3 eps = make_float3(1e-7, 1e-7, 1e-7);
-    float3 ey = max(y, eps);
+    float3 ey = _fmaxf(y, eps);
     return x / ey;
 }
 

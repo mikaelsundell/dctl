@@ -47,7 +47,6 @@ struct LogC3Curve
     float f;
 
     __DEVICE__ float lin_logC3(float lin) {
-       
         return ((lin > cut) ? c * log10(a * lin + b) + d : e * lin + f);
     }
     __DEVICE__ float logC3_lin(float log) {
@@ -100,8 +99,14 @@ __DEVICE__ LogC3Curve logC3_curve(int ei) {
 
 __DEVICE__ LogC3Colorspace logC3_colorspace() {
     LogC3Colorspace cs;
-    cs.logC3_matrix = {1.789066, -0.482534, -0.200076, -0.639849, 1.396400, 0.194432, -0.041532, 0.082335, 0.878868}; 
-    cs.xyz_matrix = {0.638008, 0.214704, 0.097744, 0.291954, 0.823841, -0.115795, 0.002798, -0.067034, 1.153294}; 
+    // logC3 matrix
+    cs.logC3_matrix.m00 = 1.789066; cs.logC3_matrix.m01 = -0.482534; cs.logC3_matrix.m02 = -0.200076;
+    cs.logC3_matrix.m03 = -0.639849; cs.logC3_matrix.m04 = 1.396400; cs.logC3_matrix.m05 = 0.194432;
+    cs.logC3_matrix.m06 = -0.041532; cs.logC3_matrix.m07 = 0.082335; cs.logC3_matrix.m08 = 0.878868;
+    // xyz matrix
+    cs.xyz_matrix.m00 = 0.638008; cs.xyz_matrix.m01 = 0.214704; cs.xyz_matrix.m02 = 0.097744;
+    cs.xyz_matrix.m03 = 0.291954; cs.xyz_matrix.m04 = 0.823841; cs.xyz_matrix.m05 = -0.115795;
+    cs.xyz_matrix.m06 = 0.002798; cs.xyz_matrix.m07 = -0.067034; cs.xyz_matrix.m08 = 1.153294;
     return cs;
 }
 

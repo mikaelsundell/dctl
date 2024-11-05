@@ -67,7 +67,7 @@ struct CineonCurve
         float scale = steps() / gamma;
         float gain = 1.0 - pow(10.0f, (offset - white) * scale);
         float offset = white / bitdepth;
-        rgb = make_float3(offset, offset, offset) + logf3(max((rgb - 1.0f) * gain + 1.0, 1e-7)) / (bitdepth * log(10.0f) * scale);
+        rgb = make_float3(offset, offset, offset) + logf3(maxf3((rgb - 1.0f) * gain + 1.0, 1e-7)) / (bitdepth * _logf(10.0f) * scale);
         return rgb;
     }
 

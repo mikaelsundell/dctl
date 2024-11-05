@@ -26,8 +26,14 @@ struct CAT02Transform
 
 __DEVICE__ CAT02Transform cat02_transform() {
     CAT02Transform ct;
-    ct.cat02_matrix = {0.7328, 0.4296, -0.1624, -0.7036, 1.6975, 0.0061, 0.0030, 0.0136, 0.9834}; 
-    ct.inv_matrix = {1.096124, -0.278869, 0.182745, 0.454369, 0.473533, 0.072098, -0.009628, -0.005698, 1.015326};
+    // cat02 matrix
+    ct.cat02_matrix.m00 = 0.7328; ct.cat02_matrix.m01 = 0.4296; ct.cat02_matrix.m02 = -0.1624;
+    ct.cat02_matrix.m03 = -0.7036; ct.cat02_matrix.m04 = 1.6975; ct.cat02_matrix.m05 = 0.0061;
+    ct.cat02_matrix.m06 = 0.0030; ct.cat02_matrix.m07 = 0.0136; ct.cat02_matrix.m08 = 0.9834;
+    // inverse matrix
+    ct.inv_matrix.m00 = 1.096124; ct.inv_matrix.m01 = -0.278869; ct.inv_matrix.m02 = 0.182745;
+    ct.inv_matrix.m03 = 0.454369; ct.inv_matrix.m04 = 0.473533; ct.inv_matrix.m05 = 0.072098;
+    ct.inv_matrix.m06 = -0.009628; ct.inv_matrix.m07 = -0.005698; ct.inv_matrix.m08 = 1.015326;
     return ct;
 }  
 

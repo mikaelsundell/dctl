@@ -7,20 +7,18 @@
 // Rec709 curve
 struct Rec709Curve
 {
-    const float threshold = 0.018;
-    const float slope = 4.5;
-    const float exp = 0.45;
-    const float scale = 1.099;
-    const float offset = 0.099;
+    float threshold;
+    float slope;
+    float exp;
+    float scale;
+    float offset;
 
-    // Convert linear to Rec. 709 gamma-encoded value
     __DEVICE__ float lin_rec709(float lin) {
         return (lin < threshold) ? slope * lin : scale * pow(lin, exp) - offset;
     }
 
-    // Convert Rec. 709 gamma-encoded value to linear
     __DEVICE__ float rec709_lin(float val) {
-        return (val < offset * slope) ? val / slope : pow((val + offset) / scale, 1.0 / exp);
+        return (val < offset * slope) ? val / slope : _powf((val + offset) / scale, 1.0 / exp);
     }
 };
 
@@ -40,13 +38,24 @@ struct Rec709Colorspace
 
 __DEVICE__ Rec709Curve rec709_curve(int ei) {
     Rec709Curve cv;
+    cv.threshold = 0.018;
+    cv.slope = 4.5;
+    cv.exp = 0.45;
+    cv.scale = 1.099;
+    cv.offset = 0.099;
     return cv;
 }
 
 __DEVICE__ Rec709Colorspace rec709_colorspace() {
     Rec709Colorspace cs;
-    cs.rec709_matrix = {3.2406, -1.5372, -0.4986, -0.9689, 1.8758, 0.0415, 0.0557, -0.2040, 1.0570}; 
-    cs.xyz_matrix = {0.4124, 0.3576, 0.1805, 0.2126, 0.7152, 0.0722, 0.0193, 0.1192, 0.9505}; 
+     // rec709 matrix
+    cs.rec709_matrix.m00 = 3.2406; cs.rec709_matrix.m01 = -1.5372; cs.rec709_matrix.m02 = -0.4986;
+    cs.rec709_matrix.m03 = -0.9689; cs.rec709_matrix.m04 = 1.8758; cs.rec709_matrix.m05 = 0.0415;
+    cs.rec709_matrix.m06 = 0.0557; cs.rec709_matrix.m07 = -0.2040; cs.rec709_matrix.m08 = 1.0570;
+    // xyz matrix
+    cs.xyz_matrix.m00 = 0.4124; cs.xyz_matrix.m01 = 0.3576; cs.xyz_matrix.m02 = 0.1805;
+    cs.xyz_matrix.m03 = 0.2126; cs.xyz_matrix.m04 = 0.7152; cs.xyz_matrix.m05 = 0.0722;
+    cs.xyz_matrix.m06 = 0.0193; cs.xyz_matrix.m07 = 0.1192; cs.xyz_matrix.m08 = 0.9505;
     return cs;
 }
 

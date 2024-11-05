@@ -45,8 +45,14 @@ __DEVICE__ Gen5Curve gen5_curve() {
 
 __DEVICE__ Gen5Colorspace gen5_colorspace() {
     Gen5Colorspace cs;
-    cs.gen5_matrix = {1.866382, -0.518397, -0.234610, -0.600342, 1.378149, 0.176732, 0.002452, 0.086400, 0.836943}; 
-    cs.xyz_matrix = {0.606530, 0.220408, 0.123479, 0.267989, 0.832731, -0.100720, -0.029442, -0.086611, 1.204861}; 
+    // gen5 matrix
+    cs.gen5_matrix.m00 = 1.866382; cs.gen5_matrix.m01 = -0.518397; cs.gen5_matrix.m02 = -0.234610;
+    cs.gen5_matrix.m03 = -0.600342; cs.gen5_matrix.m04 = 1.378149; cs.gen5_matrix.m05 = 0.176732;
+    cs.gen5_matrix.m06 = 0.002452; cs.gen5_matrix.m07 = 0.086400; cs.gen5_matrix.m08 = 0.836943;
+    // xyz matrix
+    cs.xyz_matrix.m00 = 0.606530; cs.xyz_matrix.m01 = 0.220408; cs.xyz_matrix.m02 = 0.123479;
+    cs.xyz_matrix.m03 = 0.267989; cs.xyz_matrix.m04 = 0.832731; cs.xyz_matrix.m05 = -0.100720;
+    cs.xyz_matrix.m06 = -0.029442; cs.xyz_matrix.m07 = -0.086611; cs.xyz_matrix.m08 = 1.204861;
     return cs;
 }
 

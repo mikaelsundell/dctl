@@ -2,85 +2,94 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/dctl
 
-// clang-format off
-DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600})
-DEFINE_UI_PARAMS(exposure, Exposure, DCTLUI_SLIDER_FLOAT, 0.0, -8.0, 8.0, 0.1)
-DEFINE_UI_PARAMS(ev, Exposure EV, DCTLUI_COMBO_BOX, 3, {EV_3, EV_2, EV_1, EV0, EV1, EV2, EV3}, {EV -3, EV -2, EV -1, EV 0, EV 1, EV 2, EV 3})
+DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600});
+DEFINE_UI_PARAMS(luminositylut, Film luminosity, DCTLUI_COMBO_BOX, 0, {LUMINOSITYLUT0, LUMINOSITYLUT1, LUMINOSITYLUT2, LUMINOSITYLUT3, LUMINOSITYLUT4, LUMINOSITYLUT5, LUMINOSITYLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
+DEFINE_UI_PARAMS(colorlut, Film color, DCTLUI_COMBO_BOX, 0, {COLORLUT0, COLORLUT1, COLORLUT2, COLORLUT3, COLORLUT4, COLORLUT5, COLORLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
+DEFINE_UI_PARAMS(display, Display, DCTLUI_COMBO_BOX, 0, {REC709, DCIP3}, {Rec709 Gamma2.6, DCI-P3 Gamma 2.6});
+DEFINE_UI_PARAMS(luminosityblend, Luminosity blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
+DEFINE_UI_PARAMS(colorblend, Color blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
+DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
+DEFINE_UI_PARAMS(convertrec709, Convert to rec709, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
-DEFINE_UI_PARAMS(showcolors, Show colors, DCTLUI_CHECK_BOX, 0)
-DEFINE_UI_PARAMS(showlegend, Show legend, DCTLUI_CHECK_BOX, 0)
 
-// headers
+DEFINE_LUT(LUT0_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
+DEFINE_LUT(LUT1_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D60.cube)
+DEFINE_LUT(LUT2_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D65.cube)
+DEFINE_LUT(LUT3_REC709, ../Film Looks/Rec709 Kodak 2383 D55.cube)
+DEFINE_LUT(LUT4_REC709, ../Film Looks/Rec709 Kodak 2383 D60.cube)
+DEFINE_LUT(LUT5_REC709, ../Film Looks/Rec709 Kodak 2383 D65.cube)
+DEFINE_LUT(LUT6_REC709, ./ARRI_LogC2Video_709_davinci3d_33.cube)
+DEFINE_LUT(LUT0_DCIP3, ../Film Looks/DCI-P3 Fujifilm 3513DI D55.cube)
+DEFINE_LUT(LUT1_DCIP3, ../Film Looks/DCI-P3 Fujifilm 3513DI D60.cube)
+DEFINE_LUT(LUT2_DCIP3, ../Film Looks/DCI-P3 Fujifilm 3513DI D65.cube)
+DEFINE_LUT(LUT3_DCIP3, ../Film Looks/DCI-P3 Kodak 2383 D55.cube)
+DEFINE_LUT(LUT4_DCIP3, ../Film Looks/DCI-P3 Kodak 2383 D60.cube)
+DEFINE_LUT(LUT5_DCIP3, ../Film Looks/DCI-P3 Kodak 2383 D65.cube)
+DEFINE_LUT(LUT6_DCIP3, ./ARRI_LogC2Video_P3DCI_davinci3d_33.cube)
+
+// utils
 #include "MS-Common.h"
 #include "MS-LogC3.h"
+#include "MS-Cineon.h"
+#include "MS-Rec709.h"
 
-// ev stops
-__DEVICE__ float evstops(int ev) {
-    if (ev == EV_3) {
-        return -3.0f;
-    } else if (ev == EV_2) {
-        return -2.0f;
-    } else if (ev == EV_1) {
-        return -1.0f;
-    } else if (ev == EV0) {
-        return 0.0f;
-    } else if (ev == EV1) {
-        return 1.0f;
-    } else if (ev == EV2) {
-        return 2.0f;
-    } else if (ev == EV3) {
-        return 3.0f;
-    }
-    return 0.0;
-}
-
-// logc3 color
-__DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
-    LogC3Curve cv = logC3_curve(ei);
-    float evs = evstops(ev);
-    LogC3Color colors[logC3_stops];
-    for (unsigned long i = 0; i < logC3_stops; i++) {
-        colors[i] = logC3_colors[i];
-        float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
-        float log = min(cv.lin_logC3(lin), 1.0f);
-        colors[i].stop = log;
-    }
-    float3 result = make_float3(0.0f, 0.0f, 0.0f);
-    float lum = luma_rec709(input_rgb);
-    for (unsigned long i = 0; i < logC3_stops; i++) {
-        if (lum <= colors[i].stop || i == (sizeof(logC3_colors) / sizeof(LogC3Color)) - 1) {
-            result = make_float3(colors[i].r, colors[i].g, colors[i].b);
-            break;
-        }
-    }
-    return result; 
-}
-
-// transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    rgb = lin_logC3(logC3_lin(rgb, ei) * pow(2.0, exposure), ei);
-    if (showcolors > 0) {
-        rgb = logC3_color(rgb, ei, ev);
+    if (convertrec709) {
+        rgb = lin_logC3(xyz_rec709(logC3_xyz(logC3_lin(rgb, ei))), ei);
     }
-    if (showlegend > 0) {
-        int legendwidth = p_Width * 0.8;
-        int offset = p_Height * 0.02;
-        int barheight = p_Height * 0.05;
-        int startY = p_Height - barheight - offset;
-        int startX = p_Width * 0.1;
-        int endX = startX + legendwidth;
-        if (p_Y >= startY && p_Y < startY + barheight && p_X >= startX && p_X < endX) {
-            int width = legendwidth / logC3_stops;
-            int index = (p_X - startX) / width;
-            int x = (p_X - startX) % width;
-            int y = p_Y - startY;
-            if (index >= 0 && index < logC3_stops) {
-                return make_float3(logC3_colors[index].r, logC3_colors[index].g, logC3_colors[index].b);
-            }
+    if (convertcineon) {
+        rgb = lin_cineon(logC3_lin(rgb, ei));
+    }
+    float3 luminosity;
+    if (display == REC709) {
+        switch (luminositylut) {
+            case LUMINOSITYLUT0: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_REC709); break;
+            case LUMINOSITYLUT1: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_REC709); break;
+            case LUMINOSITYLUT2: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2_REC709); break;
+            case LUMINOSITYLUT3: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3_REC709); break;
+            case LUMINOSITYLUT4: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4_REC709); break;
+            case LUMINOSITYLUT5: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_REC709); break;
+            case LUMINOSITYLUT6: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_REC709); break;
+        }
+    } else {
+        switch (luminositylut) {
+            case LUMINOSITYLUT0: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_DCIP3); break;
+            case LUMINOSITYLUT1: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_DCIP3); break;
+            case LUMINOSITYLUT2: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2_DCIP3); break;
+            case LUMINOSITYLUT3: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3_DCIP3); break;
+            case LUMINOSITYLUT4: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4_DCIP3); break;
+            case LUMINOSITYLUT5: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_DCIP3); break;
+            case LUMINOSITYLUT6: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_DCIP3); break;
         }
     }
+    float3 color;
+    if (display == REC709) {
+        switch (colorlut) {
+            case COLORLUT0: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_REC709); break;
+            case COLORLUT1: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_REC709); break;
+            case COLORLUT2: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2_REC709); break;
+            case COLORLUT3: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3_REC709); break;
+            case COLORLUT4: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4_REC709); break;
+            case COLORLUT5: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_REC709); break;
+            case COLORLUT6: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_REC709); break;
+        }
+    } else {
+        switch (colorlut) {
+            case COLORLUT0: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_DCIP3); break;
+            case COLORLUT1: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_DCIP3); break;
+            case COLORLUT2: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT2_DCIP3); break;
+            case COLORLUT3: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT3_DCIP3); break;
+            case COLORLUT4: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT4_DCIP3); break;
+            case COLORLUT5: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_DCIP3); break;
+            case COLORLUT6: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_DCIP3); break;
+        }
+    }
+    float rgblum = luma_rec601(rgb);
+    float lutlum = luma_rec601(luminosity);
+    float3 lutrgb = adjust_luma_rec601(color, lutlum);
+    rgb = adjust_luma_rec601(mix3f(rgb, lutrgb, colorblend / 100.0), mixf(rgblum, lutlum, luminosityblend / 100.0));
     if (adjustdisplay) {
         rgb = adjust_display(rgb);
     }
