@@ -244,6 +244,8 @@ Cineon conversion in RV:
 Grayscale legacy luma:
 * https://en.wikipedia.org/wiki/Grayscale
 
+Tonal curves in Desmos graph calculator:
+* https://www.desmos.com/calculator/3zhzwbfrxd
 
  Web Resources
 -------------
