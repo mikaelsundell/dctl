@@ -221,13 +221,13 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 - Download: [macbeth_50D_5203.exr](resources/macbeth_50D_5203.exr)
 
-### ARRI LogC3 stepchart - EXR 2K LogC3 encodiing 
+### ARRI LogC3 stepchart - EXR 2K LogC3 encoding 
 
 ![llogctool_LogC3_stepchart_DCI_2K figure](resources/logctool_LogC3_stepchart_DCI_2K.png "ARRI LogC3 10-bit DPX")
 
 - Download: [logctool_LogC3_stepchart_DCI_2K.exr](https://mikaelsundell.s3.eu-west-1.amazonaws.com/github/logctool/logctool_LogC3_stepchart_DCI_2K.exr)
 
-### ARRI LogC3 colorchecker - EXR 2K LogC3 encodiing 
+### ARRI LogC3 colorchecker - EXR 2K LogC3 encoding 
 
 ![logctool_LogC3_colorchecker_DCI_2K figure](resources/logctool_LogC3_colorchecker_DCI_2K.png "Cineon 10-bit DPX")
 
