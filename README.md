@@ -1,4 +1,4 @@
-# DCTL #
+# Photographic DCTLs #
 
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/mikaelsundell/icloud-snapshot/blob/master/license.md)
 
@@ -9,7 +9,7 @@ Table of Contents
 - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Installation and utils](#installation-and-utils)
-- [DCTLs](#dctls)
+- [DCTL reference](#dctlreference)
   - [Cineon color processing](#cineon-color-processing)
     - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl)
     - [MS-Cineon-Invert.dctl](#ms-cineon-invertdctl)
@@ -53,7 +53,7 @@ Run `python(.exe) run.py install` in your terminal to copy the `*.dctl` and `*.h
 
 For added convenience, the run.py script is provided, enabling easy access to various resources:
 
-**To open the DCTL readme documentation, use:**
+### To open the DCTL readme documentation, use:
 
 ```shell
 ./run.py readme
@@ -83,7 +83,18 @@ For added convenience, the run.py script is provided, enabling easy access to va
 ./run.py snapshot
 ````
 
-# DCTLs
+### Quick install for Windows users
+
+```shell
+./install.bat
+````
+
+
+### DCTL coding
+
+All DCTLs have been tested and verified to work with DCTL Metal, CUDA, and OpenCL on Mac and Windows.
+
+# DCTL reference
 
 ## Cineon color processing
 
@@ -119,12 +130,6 @@ Figure: Color calibration curves and macbeth charts at different exposures for a
 Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
-
-### MS-Cineon-Transform.dctl
-
-Cineon conversion to and from linear. 
-
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
 
 ### MS-Cineon-Transform.dctl
 
@@ -206,27 +211,28 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 ## Reference charts
 
- - ACES Macbeth 50D 5203 EXR from rawtoaces
+### Reference charts for testing and verifying DCTLs. Additional formats are available in the Logctool project README:
+
+- https://github.com/mikaelsundell/logctool
+
+### ACES Macbeth 50D 5203 EXR from rawtoaces
 
 ![logctool_LogC3_DCI_2K figure](resources/macbeth_50D_5203.png "Macbeth 50D 5203 EXR")
 
 - Download: [macbeth_50D_5203.exr](resources/macbeth_50D_5203.exr)
 
-ARRI LogC3 10-bit DPX
+### ARRI LogC3 stepchart - EXR 2K LogC3 encodiing 
 
-![logctool_LogC3_DCI_2K figure](resources/logctool_LogC3_DCI_2K.png "ARRI LogC3 10-bit DPX")
+![llogctool_LogC3_stepchart_DCI_2K figure](resources/logctool_LogC3_stepchart_DCI_2K.png "ARRI LogC3 10-bit DPX")
 
-- Download: [logctool_LogC3_DCI_2K.dpx](resources/logctool_LogC3_DCI_2K.dpx)
+- Download: [logctool_LogC3_stepchart_DCI_2K.exr](https://mikaelsundell.s3.eu-west-1.amazonaws.com/github/logctool/logctool_LogC3_stepchart_DCI_2K.exr)
 
-Cineon 10-bit DPX
+### ARRI LogC3 colorchecker - EXR 2K LogC3 encodiing 
 
-![logctool_LogC3_to_Cineon_DCI_2K figure](resources/logctool_LogC3_to_Cineon_DCI_2K.png "Cineon 10-bit DPX")
+![logctool_LogC3_colorchecker_DCI_2K figure](resources/logctool_LogC3_colorchecker_DCI_2K.png "Cineon 10-bit DPX")
 
-- Download: [logctool_LogC3_to_Cineon_DCI_2K.dpx](resources/logctool_LogC3_to_Cineon_DCI_2K.dpx)
+- Download: [logctool_LogC3_colorchecker_DCI_2K.exr](https://mikaelsundell.s3.eu-west-1.amazonaws.com/github/logctool/logctool_LogC3_colorchecker_DCI_2K.exr)
 
-Logctool project:
-
-- https://github.com/mikaelsundell/logctool
 
 References
 ---------

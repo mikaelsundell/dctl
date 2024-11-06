@@ -4,7 +4,7 @@
 
 // clang-format on
 
-// CineonColor
+// cineonColor
 struct CineonColor
 {
     float stop;
@@ -13,7 +13,7 @@ struct CineonColor
     float b;
 };
 
-__CONSTANT__ CineonColor cineon_colors[] = {
+__CONSTANT__ struct CineonColor cineon_colors[] = {
     {-8, 0.01f, 0.01f, 0.01f},
     {-7, 0.05f, 0.05f, 0.05f},
     {-6, 0.10f, 0.10f, 0.10f},
@@ -42,73 +42,77 @@ struct CineonCurve
     float bitdepth;
     int offset;
     int white;
-
-    __DEVICE__  float steps() {
-        return (density / bitdepth);
-    }
-
-    __DEVICE__ float3 invert_cineon(float3 rgb, float3 scale, float3 dmin) {
-        float3 invert = make_float3(offset, offset, offset);
-        invert += scale * log10f3(div3f(dmin, rgb)) / steps();
-        invert /= bitdepth;
-        return invert;
-    }
-
-    __DEVICE__ float3 reverse_cineon(float3 rgb, float3 scale, float3 dmin) {
-        float3 reverse = rgb;
-        reverse *= bitdepth;
-        reverse -= make_float3(offset, offset, offset);
-        float3 scaled = reverse * steps() / scale;
-        rgb = dmin / pow10f3(scaled);
-        return rgb;
-    }
-
-    __DEVICE__ float3 lin_cineon(float3 rgb) {
-        float scale = steps() / gamma;
-        float gain = 1.0 - pow(10.0f, (offset - white) * scale);
-        float offset = white / bitdepth;
-        rgb = make_float3(offset, offset, offset) + logf3(maxf3((rgb - 1.0f) * gain + 1.0, 1e-7)) / (bitdepth * _logf(10.0f) * scale);
-        return rgb;
-    }
-
-    __DEVICE__ float3 cineon_lin(float3 rgb) {
-        float scale = steps() / gamma;
-        rgb = minf3(rgb, 1.0f) * bitdepth;
-        float black = pow(10.0f, offset * scale);
-        float diff = pow(10.0f, white * scale) - black;
-        float r = pow(10.0f, rgb.x * scale);
-        float g = pow(10.0f, rgb.y * scale);
-        float b = pow(10.0f, rgb.z * scale);
-        rgb = (make_float3(r, g, b) - black) / diff;
-        return rgb;
-    }
 };
 
-__DEVICE__ CineonCurve cineon_curve() {
-    CineonCurve cv = { 2.046f, 0.6f, 1023.0f, 95, 685 };
+__DEVICE__  float CineonCurve_steps(struct CineonCurve cv) {
+    return (cv.density / cv.bitdepth);
+}
+
+__DEVICE__ float3 CineonCurve_invert_cineon(struct CineonCurve cv, float3 rgb, float3 scale, float3 dmin) {
+    float3 invert = make_float3(cv.offset, cv.offset, cv.offset);
+    invert += scale * log10_f3(div_3f(dmin, rgb)) / CineonCurve_steps(cv);
+    invert /= cv.bitdepth;
+    return invert;
+}
+
+__DEVICE__ float3 CineonCurve_reverse_cineon(struct CineonCurve cv, float3 rgb, float3 scale, float3 dmin) {
+    float3 reverse = rgb;
+    reverse *= cv.bitdepth;
+    reverse -= make_float3(cv.offset, cv.offset, cv.offset);
+    float3 scaled = reverse * CineonCurve_steps(cv) / scale;
+    rgb = dmin / pow10_f3(scaled);
+    return rgb;
+}
+
+__DEVICE__ float3 CineonCurve_lin_cineon(struct CineonCurve cv, float3 rgb) {
+    float scale = CineonCurve_steps(cv) / cv.gamma;
+    float gain = 1.0 - pow10_f((cv.offset - cv.white) * scale);
+    float offset = cv.white / cv.bitdepth;
+    float r = offset + log_f(max_f((rgb.x - 1.0f) * gain + 1.0, 1e-7)) / (cv.bitdepth * log_f(10) * scale);
+    float g = offset + log_f(max_f((rgb.y - 1.0f) * gain + 1.0, 1e-7)) / (cv.bitdepth * log_f(10) * scale);
+    float b = offset + log_f(max_f((rgb.z - 1.0f) * gain + 1.0, 1e-7)) / (cv.bitdepth * log_f(10) * scale);
+    rgb = make_float3(r, g, b);
+    return rgb;
+}
+
+__DEVICE__ float3 CineonCurve_cineon_lin(struct CineonCurve cv, float3 rgb) {
+    float scale = CineonCurve_steps(cv) / cv.gamma;
+    rgb = min_f3(rgb, 1.0f) * cv.bitdepth;
+    float black = pow_f(10.0f, cv.offset * scale);
+    float diff = pow_f(10.0f, cv.white * scale) - black;
+    float r = pow_f(10.0f, rgb.x * scale);
+    float g = pow_f(10.0f, rgb.y * scale);
+    float b = pow_f(10.0f, rgb.z * scale);
+    rgb = (make_float3(r, g, b) - black) / diff;
+    return rgb;
+}
+
+__DEVICE__ struct CineonCurve cineon_curve() {
+    struct CineonCurve cv;
+    cv.density = 2.046; cv.gamma = 0.6; cv.bitdepth = 1023; cv.offset = 95; cv.white = 685;
     return cv;
 }
 
-// Invert Negative to Cineon
+// invert negative to cineon
 __DEVICE__ float3 invert_cineon(float3 rgb, float3 scale, float3 dmin) {
-    CineonCurve cv = cineon_curve();
-    return cv.invert_cineon(rgb, scale, dmin);
+    struct CineonCurve cv = cineon_curve();
+    return CineonCurve_invert_cineon(cv, rgb, scale, dmin);
 }
 
-// Reverse Negative to Cineon
+// reverse negative to cineon
 __DEVICE__ float3 reverse_cineon(float3 rgb, float3 scale, float3 dmin) {
-    CineonCurve cv = cineon_curve();
-    return cv.reverse_cineon(rgb, scale, dmin);
+    struct CineonCurve cv = cineon_curve();
+    return CineonCurve_reverse_cineon(cv, rgb, scale, dmin);
 }
 
-// Convert Cineon to linear
-__DEVICE__ float3 cineon_lin(float3 rgb) {
-    CineonCurve cv = cineon_curve();
-    return cv.cineon_lin(rgb);
-}
-
-// Convert linear to Cineon
+// convert linear to cineon
 __DEVICE__ float3 lin_cineon(float3 rgb) {
-    CineonCurve cv = cineon_curve();
-    return cv.lin_cineon(rgb);
+    struct CineonCurve cv = cineon_curve();
+    return CineonCurve_lin_cineon(cv, rgb);
+}
+
+// convert cineon to linear
+__DEVICE__ float3 cineon_lin(float3 rgb) {
+    struct CineonCurve cv = cineon_curve();
+    return CineonCurve_cineon_lin(cv, rgb);
 }

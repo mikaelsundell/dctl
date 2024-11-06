@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/dctl
 
+// clang-format on
 DEFINE_UI_PARAMS(density, Density, DCTLUI_SLIDER_FLOAT, 2.046, 0, 4.092, 1);
 DEFINE_UI_PARAMS(bitdepth, Bitdepth, DCTLUI_SLIDER_FLOAT, 1023, 0, 2048, 1);
 DEFINE_UI_PARAMS(offset, Offset, DCTLUI_SLIDER_FLOAT, 95, 0, 190, 1);
@@ -34,7 +35,7 @@ __DEVICE__ inline float3 pixel(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE
     );
 }
 
-__DEVICE__ float3 sample(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, ROI roi)
+__DEVICE__ float3 sample(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, struct ROI roi)
 {
     float3 sum = make_float3(0.0f, 0.0f, 0.0f);
     int count = 0;
@@ -55,7 +56,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
 {
     float3 rgb = pixel(p_TexR, p_TexG, p_TexB, p_X, p_Y);
     float3 dmin;
-    ROI sampler;
+    struct ROI sampler;
 
     // sample
     if (dminmethod == SAMPLER) {
@@ -68,25 +69,19 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
         dmin = make_float3(dminx, dminy, dminz);
 
     }
-
-    // scale
     float3 scale = make_float3(scalex, scaley, scalez);
-    
-    // cineon
-    CineonCurve curve;
-    curve.density = density;
-    curve.bitdepth = bitdepth;
-    curve.offset = offset;
-
+    struct CineonCurve cv;
+    cv.density = density;
+    cv.bitdepth = bitdepth;
+    cv.offset = offset;
     if (cineonmethod == INVERSE) {
-        rgb = curve.invert_cineon(rgb, scale, dmin);
+        rgb = invert_cineon(rgb, scale, dmin);
     } else {
-        rgb = curve.reverse_cineon(rgb, scale, dmin);
+        rgb = reverse_cineon(rgb, scale, dmin);
     }
     if (adjustdisplay) {
         rgb = adjust_display(rgb);
     }
-
     if (showsampler && dminmethod == SAMPLER) {
         float3 color;
         if (samplercolor == WHITE) {
@@ -100,7 +95,6 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
         } else if (samplercolor == BLUE) {
             color = make_float3(0.0f, 0.0f, 1.0f);
         }
-
         int crossw = (samplerw / 2) * 3 / 2;
         int crossh = (samplerh / 2) * 3 / 2;
         if ((p_X == sampler.x1 || p_X == sampler.x2 - 1) && (p_Y >= sampler.y1 && p_Y < sampler.y2) ||

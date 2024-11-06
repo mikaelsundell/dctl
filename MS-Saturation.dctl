@@ -19,7 +19,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     } else {
         factor = 1.0f + ((saturation - 50.0f) / 50.0f);
     }
-    hsv.y = min(hsv.y * factor, 1.0f);
+    hsv.y = min_f(hsv.y * factor, 1.0f);
     float3 res = hsv_rgb(hsv);
     return res;
 }

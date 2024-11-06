@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // https://github.com/mikaelsundell/dctl
 
+// clang-format on
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600});
 DEFINE_UI_PARAMS(luminositylut, Film luminosity, DCTLUI_COMBO_BOX, 0, {LUMINOSITYLUT0, LUMINOSITYLUT1, LUMINOSITYLUT2, LUMINOSITYLUT3, LUMINOSITYLUT4, LUMINOSITYLUT5, LUMINOSITYLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
 DEFINE_UI_PARAMS(colorlut, Film color, DCTLUI_COMBO_BOX, 0, {COLORLUT0, COLORLUT1, COLORLUT2, COLORLUT3, COLORLUT4, COLORLUT5, COLORLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
@@ -89,7 +90,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float rgblum = luma_rec601(rgb);
     float lutlum = luma_rec601(luminosity);
     float3 lutrgb = adjust_luma_rec601(color, lutlum);
-    rgb = adjust_luma_rec601(mix3f(rgb, lutrgb, colorblend / 100.0), mixf(rgblum, lutlum, luminosityblend / 100.0));
+    rgb = adjust_luma_rec601(mix_f3(rgb, lutrgb, colorblend / 100.0), mix_f(rgblum, lutlum, luminosityblend / 100.0));
     if (adjustdisplay) {
         rgb = adjust_display(rgb);
     }

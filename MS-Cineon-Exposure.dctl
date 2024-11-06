@@ -35,19 +35,19 @@ __DEVICE__ float evstops(int ev) {
 
 // cineon color
 __DEVICE__ float3 cineon_color(float3 input_rgb, int ev) {
-    CineonCurve cv = cineon_curve();
+    struct CineonCurve cv = cineon_curve();
     float evs = evstops(ev);
-    CineonColor colors[cineon_stops];
+    struct CineonColor colors[cineon_stops];
     for (unsigned long i = 0; i < cineon_stops; i++) {
         colors[i] = cineon_colors[i];
-        float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
-        float3 log = minf3(cv.lin_cineon(make_float3(lin, lin, lin)), 1.0f);
+        float lin = pow_f(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
+        float3 log = min_f3(CineonCurve_lin_cineon(cv, make_float3(lin, lin, lin)), 1.0f);
         colors[i].stop = log.x;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
     float lum = luma_rec709(input_rgb);
     for (unsigned long i = 0; i < cineon_stops; i++) {
-        if (lum <= colors[i].stop || i == (sizeof(cineon_colors) / sizeof(CineonColor)) - 1) {
+        if (lum <= colors[i].stop || i == (sizeof(cineon_colors) / sizeof(struct CineonColor)) - 1) {
             result = make_float3(colors[i].r, colors[i].g, colors[i].b);
             break;
         }
@@ -59,7 +59,7 @@ __DEVICE__ float3 cineon_color(float3 input_rgb, int ev) {
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    rgb = maxf3(lin_cineon(cineon_lin(rgb) * pow(2.0f, exposure)), 0.0f);
+    rgb = max_f3(lin_cineon(cineon_lin(rgb) * pow_f(2.0f, exposure)), 0.0f);
     if (showcolors > 0) {
         rgb = cineon_color(rgb, ev);
     }

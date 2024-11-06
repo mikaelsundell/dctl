@@ -7,25 +7,25 @@
 // CAT02 transform
 struct CAT02Transform
 {
-    Matrix cat02_matrix;
-    Matrix inv_matrix;
-    
-    __DEVICE__ float3 adaptation(float3 xyz, float kelvin) {
-        float norm = kelvin / 10000.0; 
-        float sx = 1.0 + norm * 1.0;
-        float sy = 1.0;
-        float sz = 1.0 + norm * -1.0;
-        float3 lms = mult_matrix(xyz, cat02_matrix);
-        lms.x *= sx;
-        lms.y *= sy;
-        lms.z *= sz;
-        float3 color = mult_matrix(lms, inv_matrix);
-        return color;
-    }
+    struct Matrix cat02_matrix;
+    struct Matrix inv_matrix;
 };
 
-__DEVICE__ CAT02Transform cat02_transform() {
-    CAT02Transform ct;
+__DEVICE__ float3 CAT02Transform_adaptation(struct CAT02Transform ct, float3 xyz, float kelvin) {
+    float norm = kelvin / 10000.0; 
+    float sx = 1.0 + norm * 1.0;
+    float sy = 1.0;
+    float sz = 1.0 + norm * -1.0;
+    float3 lms = mult_matrix(xyz, ct.cat02_matrix);
+    lms.x *= sx;
+    lms.y *= sy;
+    lms.z *= sz;
+    float3 color = mult_matrix(lms, ct.inv_matrix);
+    return color;
+}
+
+__DEVICE__ struct CAT02Transform cat02_transform() {
+    struct CAT02Transform ct;
     // cat02 matrix
     ct.cat02_matrix.m00 = 0.7328; ct.cat02_matrix.m01 = 0.4296; ct.cat02_matrix.m02 = -0.1624;
     ct.cat02_matrix.m03 = -0.7036; ct.cat02_matrix.m04 = 1.6975; ct.cat02_matrix.m05 = 0.0061;
@@ -37,8 +37,8 @@ __DEVICE__ CAT02Transform cat02_transform() {
     return ct;
 }  
 
-// CAT02 adaptation
+// cat02 adaptation
 __DEVICE__ float3 cat02_adaptation(float3 rgb, float kelvin) {
-    CAT02Transform ct = cat02_transform();
-    return ct.adaptation(rgb, kelvin);
+    struct CAT02Transform ct = cat02_transform();
+    return CAT02Transform_adaptation(ct, rgb, kelvin);
 }

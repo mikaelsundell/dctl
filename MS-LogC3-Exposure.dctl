@@ -36,19 +36,19 @@ __DEVICE__ float evstops(int ev) {
 
 // logc3 color
 __DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
-    LogC3Curve cv = logC3_curve(ei);
+    struct LogC3Curve cv = logC3_curve(ei);
+    struct LogC3Color colors[logC3_stops];
     float evs = evstops(ev);
-    LogC3Color colors[logC3_stops];
     for (unsigned long i = 0; i < logC3_stops; i++) {
         colors[i] = logC3_colors[i];
-        float lin = pow(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
-        float log = min(cv.lin_logC3(lin), 1.0f);
+        float lin = pow_f(2.0f, colors[i].stop + evs + 0.5f) * 0.18f;
+        float log = min_f(LogC3Curve_lin_logC3(cv, lin), 1.0f);
         colors[i].stop = log;
     }
     float3 result = make_float3(0.0f, 0.0f, 0.0f);
     float lum = luma_rec709(input_rgb);
     for (unsigned long i = 0; i < logC3_stops; i++) {
-        if (lum <= colors[i].stop || i == (sizeof(logC3_colors) / sizeof(LogC3Color)) - 1) {
+        if (lum <= colors[i].stop || i == (sizeof(logC3_colors) / sizeof(struct LogC3Color)) - 1) {
             result = make_float3(colors[i].r, colors[i].g, colors[i].b);
             break;
         }
@@ -60,7 +60,7 @@ __DEVICE__ float3 logC3_color(float3 input_rgb, int ei, int ev) {
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    rgb = lin_logC3(logC3_lin(rgb, ei) * _powf(2.0, exposure), ei);
+    rgb = lin_logC3(logC3_lin(rgb, ei) * pow_f(2.0, exposure), ei);
     if (showcolors > 0) {
         rgb = logC3_color(rgb, ei, ev);
     }

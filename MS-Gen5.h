@@ -4,7 +4,7 @@
 
 // clang-format on
 
-// Gen5 curve
+// gen5 curve
 struct Gen5Curve
 {
     float a;
@@ -14,37 +14,38 @@ struct Gen5Curve
     float e;
     float lin_cut;
     float log_cut;
-
-    __DEVICE__ float lin_gen5(float lin) {
-        return ((lin >= lin_cut) ? a * log(lin + b) + c : d * lin + e);
-    }
-    __DEVICE__ float gen5_lin(float log) {
-        return ((log >= log_cut) ? exp((log - c) / a) - b : (log - e) / d);
-    }
 };
 
-// Gen5 colorspace
+__DEVICE__ float Gen5Curve_lin_gen5(struct Gen5Curve cv, float lin) {
+    return ((lin >= cv.lin_cut) ? cv.a * log_f(lin + cv.b) + cv.c : cv.d * lin + cv.e);
+}
+
+__DEVICE__ float Gen5Curve_gen5_lin(struct Gen5Curve cv, float log) {
+    return ((log >= cv.log_cut) ? exp_f((log - cv.c) / cv.a) - cv.b : (log - cv.e) / cv.d);
+}
+
+// gen5 colorspace
 struct Gen5Colorspace
 {
-    Matrix gen5_matrix;
-    Matrix xyz_matrix;
-
-    __DEVICE__ float3 xyz_gen5(float3 xyz) {
-        return mult_matrix(xyz, gen5_matrix);
-    }
-    __DEVICE__ float3 gen5_xyz(float3 gen5) {
-        return mult_matrix(gen5, xyz_matrix);
-    }
+    struct Matrix gen5_matrix;
+    struct Matrix xyz_matrix;
 };
 
-__DEVICE__ Gen5Curve gen5_curve() {
-    Gen5Curve cv;
+__DEVICE__ float3 Gen5Colorspace_xyz_gen5(struct Gen5Colorspace cs, float3 xyz) {
+    return mult_matrix(xyz, cs.gen5_matrix);
+}
+__DEVICE__ float3 Gen5Colorspace_gen5_xyz(struct Gen5Colorspace cs, float3 gen5) {
+    return mult_matrix(gen5, cs.xyz_matrix);
+}
+
+__DEVICE__ struct Gen5Curve gen5_curve() {
+    struct Gen5Curve cv;
     cv.a = 0.08692876065491224; cv.b = 0.005494072432257808; cv.c = 0.5300133392291939; cv.d = 8.283605932402494; cv.e = 0.09246575342465753; cv.lin_cut = 0.005; cv.log_cut = cv.d * cv.lin_cut + cv.e;
     return cv;
 }
 
-__DEVICE__ Gen5Colorspace gen5_colorspace() {
-    Gen5Colorspace cs;
+__DEVICE__ struct Gen5Colorspace gen5_colorspace() {
+    struct Gen5Colorspace cs;
     // gen5 matrix
     cs.gen5_matrix.m00 = 1.866382; cs.gen5_matrix.m01 = -0.518397; cs.gen5_matrix.m02 = -0.234610;
     cs.gen5_matrix.m03 = -0.600342; cs.gen5_matrix.m04 = 1.378149; cs.gen5_matrix.m05 = 0.176732;
@@ -56,26 +57,26 @@ __DEVICE__ Gen5Colorspace gen5_colorspace() {
     return cs;
 }
 
-// Convert linear to Gen5
+// convert linear to Gen5
 __DEVICE__ float3 lin_gen5(float3 rgb) {
-    Gen5Curve cv = gen5_curve();
-    return make_float3(cv.lin_gen5(rgb.x), cv.lin_gen5(rgb.y), cv.lin_gen5(rgb.z));
+    struct Gen5Curve cv = gen5_curve();
+    return make_float3(Gen5Curve_lin_gen5(cv, rgb.x), Gen5Curve_lin_gen5(cv, rgb.y), Gen5Curve_lin_gen5(cv, rgb.z));
 }
 
-// Convert Gen5 to linear
+// convert Gen5 to linear
 __DEVICE__ float3 gen5_lin(float3 rgb) {
-    Gen5Curve cv = gen5_curve();
-    return make_float3(cv.gen5_lin(rgb.x), cv.gen5_lin(rgb.y), cv.gen5_lin(rgb.z));
+    struct Gen5Curve cv = gen5_curve();
+    return make_float3(Gen5Curve_gen5_lin(cv, rgb.x), Gen5Curve_gen5_lin(cv, rgb.y), Gen5Curve_gen5_lin(cv, rgb.z));
 }    
 
-// Convert Gen5 to xyz
+// convert Gen5 to xyz
 __DEVICE__ float3 xyz_gen5(float3 rgb) {
-    Gen5Colorspace cs = gen5_colorspace();
-    return cs.xyz_gen5(rgb);
+    struct Gen5Colorspace cs = gen5_colorspace();
+    return Gen5Colorspace_xyz_gen5(cs, rgb);
 }
 
-// Convert XYZ to Gen5
+// convert XYZ to Gen5
 __DEVICE__ float3 gen5_xyz(float3 rgb) {
-    Gen5Colorspace cs = gen5_colorspace();
-    return cs.gen5_xyz(rgb);
+    struct Gen5Colorspace cs = gen5_colorspace();
+    return Gen5Colorspace_gen5_xyz(cs, rgb);
 }    

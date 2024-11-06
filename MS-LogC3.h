@@ -4,7 +4,7 @@
 
 // clang-format on
 
-// LogC3Color
+// logC3Color
 struct LogC3Color
 {
     float stop;
@@ -13,7 +13,7 @@ struct LogC3Color
     float b;
 };
 
-__CONSTANT__ LogC3Color logC3_colors[] = {
+__CONSTANT__ struct LogC3Color logC3_colors[] = {
     {-8, 0.01f, 0.01f, 0.01f},
     {-7, 0.05f, 0.05f, 0.05f},
     {-6, 0.10f, 0.10f, 0.10f},
@@ -32,9 +32,10 @@ __CONSTANT__ LogC3Color logC3_colors[] = {
     {7,  0.95f, 0.95f, 0.95f},
     {8,  0.99f, 0.99f, 0.99f}
 };
+
 #define logC3_stops 17
 
-// LogC3 curve
+// logC3 curve
 struct LogC3Curve
 {
     int ei;
@@ -45,60 +46,72 @@ struct LogC3Curve
     float d;
     float e;
     float f;
-
-    __DEVICE__ float lin_logC3(float lin) {
-        return ((lin > cut) ? c * log10(a * lin + b) + d : e * lin + f);
-    }
-    __DEVICE__ float logC3_lin(float log) {
-        float lin = ((log > e * cut + f) ? (pow(10, (log - d) / c) - b) / a : (log - f) / e);
-        return lin;
-    }
 };
 
-// LogC3 colorspace
+__DEVICE__ float LogC3Curve_lin_logC3(struct LogC3Curve cv, float lin) {
+    return ((lin > cv.cut) ? cv.c * log10_f(cv.a * lin + cv.b) + cv.d : cv.e * lin + cv.f);
+}
+
+__DEVICE__ float LogC3Curve_logC3_lin(struct LogC3Curve cv, float log) {
+    float lin = ((log > cv.e * cv.cut + cv.f) ? (pow_f(10, (log - cv.d) / cv.c) - cv.b) / cv.a : (log - cv.f) / cv.e);
+    return lin;
+}
+
+// logC3 colorspace
 struct LogC3Colorspace
 {
-    Matrix logC3_matrix;
-    Matrix xyz_matrix;
-
-    __DEVICE__ float3 xyz_logC3(float3 xyz) {
-        return mult_matrix(xyz, logC3_matrix);
-    }
-    __DEVICE__ float3 logC3_xyz(float3 logC3) {
-        return mult_matrix(logC3, xyz_matrix);
-    }
+    struct Matrix logC3_matrix;
+    struct Matrix xyz_matrix;
 };
 
-__DEVICE__ LogC3Curve logC3_curve(int ei) {
-    LogC3Curve cv;
+__DEVICE__ float3 LogC3Colorspace_xyz_logC3(struct LogC3Colorspace cs, float3 xyz) {
+    return mult_matrix(xyz, cs.logC3_matrix);
+}
+
+__DEVICE__ float3 LogC3Colorspace_logC3_xyz(struct LogC3Colorspace cs, float3 logC3) {
+    return mult_matrix(logC3, cs.xyz_matrix);
+}
+
+__DEVICE__ struct LogC3Curve logC3_curve(int ei) {
+    struct LogC3Curve cv;
     if (ei == EI160) {
         cv.ei = 160; cv.cut = 0.005561; cv.a = 5.555556; cv.b = 0.080216; cv.c = 0.269036; cv.d = 0.381991; cv.e = 5.842037; cv.f = 0.092778;
-    } else if (ei == EI200) {
+    }
+    else if (ei == EI200) {
         cv.ei = 200; cv.cut = 0.006208; cv.a = 5.555556; cv.b = 0.076621; cv.c = 0.266007; cv.d = 0.382478; cv.e = 5.776265; cv.f = 0.092782;
-    } else if (ei == EI250) {
+    }
+    else if (ei == EI250) {
         cv.ei = 250; cv.cut = 0.006871; cv.a = 5.555556; cv.b = 0.072941; cv.c = 0.262978; cv.d = 0.382966; cv.e = 5.710494; cv.f = 0.092786;
-    } else if (ei == EI320) {
+    }
+    else if (ei == EI320) {
         cv.ei = 320; cv.cut = 0.007622; cv.a = 5.555556; cv.b = 0.068768; cv.c = 0.259627; cv.d = 0.383508; cv.e = 5.637732; cv.f = 0.092791;
-    } else if (ei == EI400) {
+    }
+    else if (ei == EI400) {
         cv.ei = 400; cv.cut = 0.008318; cv.a = 5.555556; cv.b = 0.064901; cv.c = 0.256598; cv.d = 0.383999; cv.e = 5.571960; cv.f = 0.092795;
-    } else if (ei == EI500) {
+    }
+    else if (ei == EI500) {
         cv.ei = 500; cv.cut = 0.009031; cv.a = 5.555556; cv.b = 0.060939; cv.c = 0.253569; cv.d = 0.384493; cv.e = 5.506188; cv.f = 0.092800;
-    } else if (ei == EI640) {
+    }
+    else if (ei == EI640) {
         cv.ei = 640; cv.cut = 0.009840; cv.a = 5.555556; cv.b = 0.056443; cv.c = 0.250219; cv.d = 0.385040; cv.e = 5.433426; cv.f = 0.092805;
-    } else if (ei == EI800) {
+    }
+    else if (ei == EI800) {
         cv.ei = 800; cv.cut = 0.010591; cv.a = 5.555556; cv.b = 0.052272; cv.c = 0.247190; cv.d = 0.385537; cv.e = 5.367655; cv.f = 0.092809;
-    } else if (ei == EI1000) {
+    }
+    else if (ei == EI1000) {
         cv.ei = 1000; cv.cut = 0.011361; cv.a = 5.555556; cv.b = 0.047996; cv.c = 0.244161; cv.d = 0.386036; cv.e = 5.301883; cv.f = 0.092814;
-    } else if (ei == EI1280) {
+    }
+    else if (ei == EI1280) {
         cv.ei = 1280; cv.cut = 0.012235; cv.a = 5.555556; cv.b = 0.043137; cv.c = 0.240810; cv.d = 0.386590; cv.e = 5.229121; cv.f = 0.092819;
-    } else if (ei == EI1600) {
+    }
+    else if (ei == EI1600) {
         cv.ei = 1600; cv.cut = 0.013047; cv.a = 5.555556; cv.b = 0.038625; cv.c = 0.237781; cv.d = 0.387093; cv.e = 5.163350; cv.f = 0.092824;
     }
     return cv;
 }
 
-__DEVICE__ LogC3Colorspace logC3_colorspace() {
-    LogC3Colorspace cs;
+__DEVICE__ struct LogC3Colorspace logC3_colorspace() {
+    struct LogC3Colorspace cs;
     // logC3 matrix
     cs.logC3_matrix.m00 = 1.789066; cs.logC3_matrix.m01 = -0.482534; cs.logC3_matrix.m02 = -0.200076;
     cs.logC3_matrix.m03 = -0.639849; cs.logC3_matrix.m04 = 1.396400; cs.logC3_matrix.m05 = 0.194432;
@@ -110,26 +123,26 @@ __DEVICE__ LogC3Colorspace logC3_colorspace() {
     return cs;
 }
 
-// Convert linear to LogC3
+// convert linear to LogC3
 __DEVICE__ float3 lin_logC3(float3 rgb, int ei) {
-    LogC3Curve cv = logC3_curve(ei);
-    return make_float3(cv.lin_logC3(rgb.x), cv.lin_logC3(rgb.y), cv.lin_logC3(rgb.z));
+    struct LogC3Curve cv = logC3_curve(ei);
+    return make_float3(LogC3Curve_lin_logC3(cv, rgb.x), LogC3Curve_lin_logC3(cv, rgb.y), LogC3Curve_lin_logC3(cv, rgb.z));
 }
 
-// Convert LogC3 to linear
+// convert LogC3 to linear
 __DEVICE__ float3 logC3_lin(float3 rgb, int ei) {
-    LogC3Curve cv = logC3_curve(ei);
-    return make_float3(cv.logC3_lin(rgb.x), cv.logC3_lin(rgb.y), cv.logC3_lin(rgb.z));
+    struct LogC3Curve cv = logC3_curve(ei);
+    return make_float3(LogC3Curve_logC3_lin(cv, rgb.x), LogC3Curve_logC3_lin(cv, rgb.y), LogC3Curve_logC3_lin(cv, rgb.z));
 }    
 
-// Convert LogC3 to xyz
+// convert LogC3 to xyz
 __DEVICE__ float3 xyz_logC3(float3 rgb) {
-    LogC3Colorspace cs = logC3_colorspace();
-    return cs.xyz_logC3(rgb);
+    struct LogC3Colorspace cs = logC3_colorspace();
+    return LogC3Colorspace_xyz_logC3(cs, rgb);
 }
 
-// Convert XYZ to LogC3
+// convert XYZ to LogC3
 __DEVICE__ float3 logC3_xyz(float3 rgb) {
-    LogC3Colorspace cs = logC3_colorspace();
-    return cs.logC3_xyz(rgb);
+    struct LogC3Colorspace cs = logC3_colorspace();
+    return LogC3Colorspace_logC3_xyz(cs, rgb);
 }    
