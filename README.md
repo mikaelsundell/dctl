@@ -89,10 +89,9 @@ For added convenience, the run.py script is provided, enabling easy access to va
 ./install.bat
 ````
 
+### DCTL Compatibility
 
-### DCTL coding
-
-All DCTLs have been tested and verified to work with DCTL Metal, CUDA, and OpenCL on Mac and Windows.
+All DCTLs are tested and confirmed to work with Metal, CUDA, and OpenCL on both Mac and Windows platforms.
 
 # DCTL reference
 
