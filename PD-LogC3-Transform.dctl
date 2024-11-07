@@ -8,8 +8,8 @@ DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320,
 DEFINE_UI_PARAMS(mapcolorspace, Map colorspace, DCTLUI_CHECK_BOX, 0)
 
 // headers
-#include "MS-Common.h"
-#include "MS-LogC3.h"
+#include "PD-Common.h"
+#include "PD-LogC3.h"
 
 // transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)

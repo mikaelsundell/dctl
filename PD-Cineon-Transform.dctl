@@ -6,8 +6,8 @@
 DEFINE_UI_PARAMS(transform, Transform, DCTLUI_COMBO_BOX, 0, {LINCINEON, CINEONLIN}, {Convert linear to Cineon, Convert Cineon to Linear})
 
 // headers
-#include "MS-Common.h"
-#include "MS-Cineon.h"
+#include "PD-Common.h"
+#include "PD-Cineon.h"
 
 // transform
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)

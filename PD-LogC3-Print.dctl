@@ -29,10 +29,10 @@ DEFINE_LUT(LUT5_DCIP3, ../Film Looks/DCI-P3 Kodak 2383 D65.cube)
 DEFINE_LUT(LUT6_DCIP3, ./ARRI_LogC2Video_P3DCI_davinci3d_33.cube)
 
 // utils
-#include "MS-Common.h"
-#include "MS-LogC3.h"
-#include "MS-Cineon.h"
-#include "MS-Rec709.h"
+#include "PD-Common.h"
+#include "PD-LogC3.h"
+#include "PD-Cineon.h"
+#include "PD-Rec709.h"
 
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {

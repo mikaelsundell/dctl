@@ -2,38 +2,39 @@
 
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/mikaelsundell/icloud-snapshot/blob/master/license.md)
 
-Table of Contents
-=================
-
-- [DCTL](#dctl)
-- [Table of Contents](#table-of-contents)
+- [Photographic DCTLs](#photographic-dctls)
   - [Introduction](#introduction)
   - [Installation and utils](#installation-and-utils)
-- [DCTL reference](#dctlreference)
-  - [Cineon color processing](#cineon-color-processing)
-    - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl)
-    - [MS-Cineon-Invert.dctl](#ms-cineon-invertdctl)
+    - [To open the DCTL readme documentation, use:](#to-open-the-dctl-readme-documentation-use)
+    - [Quick install for Windows users](#quick-install-for-windows-users)
+    - [DCTL compatibility](#dctl-compatibility)
+  - [Verified DCTLs](#verified-dctls)
+    - [Cineon color processing](#cineon-color-processing)
+      - [Cineon exposure](#cineon-exposure)
       - [Cineon inversion](#cineon-inversion)
       - [ACES scene-linear and calibration curves](#aces-scene-linear-and-calibration-curves)
-    - [MS-Cineon-Exposure.dctl](#ms-cineon-exposuredctl-1)
-    - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl)
-    - [MS-Cineon-Transform.dctl](#ms-cineon-transformdctl-1)
-  - [Gen5 color processing](#gen5-color-processing)
-    - [MS-Gen5-Transform.dctl](#ms-gen5-transformdctl)
-  - [LogC3 color processing](#logc3-color-processing)
-    - [MS-LogC3-Print.dctl](#ms-logc3-printdctl)
-    - [MS-LogC3-Exposure.dctl](#ms-logc3-exposuredctl)
-    - [MS-LogC3-Temperature.dctl](#ms-logc3-temperaturedctl)
-    - [MS-LogC3-Transform.dctl](#ms-logc3-transformdctl)
-  - [Utility DCTLs](#utility-dctls)
-    - [MS-Grade.dctl](#ms-gradedctl)
-    - [MS-Stripify.dctl](#ms-stripifydctl)
-    - [MS-Saturation.dctl](#ms-saturationdctl)
+      - [Cineon exposure](#cineon-exposure-1)
+      - [Cineon transform](#cineon-transform)
+    - [ARRI LogC color processing](#arri-logc-color-processing)
+      - [LogC3 exposure](#logc3-exposure)
+      - [LogC3 print](#logc3-print)
+      - [LogC3 transform](#logc3-transform)
+    - [Blackmagic LogC color processing](#blackmagic-logc-color-processing)
+      - [Gen5 transform](#gen5-transform)
+    - [Utilities](#utilities)
+      - [Stripify](#stripify)
+      - [Saturation](#saturation)
+  - [Experimental DCTLs](#experimental-dctls)
+      - [LogC3 temperature](#logc3-temperature)
+      - [Grade](#grade)
   - [DCTLs from other projects](#dctls-from-other-projects)
-    - [Printer Lights.dctl](#printer-lightsdctl)
-    - [TetraInterp.dctl](#tetrainterpdctl)
-    - [TetraInterpHSV.dctl](#tetrainterphsvdctl)
+      - [Printer Lights](#printer-lights)
+      - [TetraInterp](#tetrainterp)
+      - [TetraInterpHSV](#tetrainterphsv)
   - [Reference charts](#reference-charts)
+      - [ACES Macbeth 50D 5203 EXR from rawtoaces](#aces-macbeth-50d-5203-exr-from-rawtoaces)
+      - [ARRI LogC3 stepchart - EXR 2K LogC3 encoding](#arri-logc3-stepchart---exr-2k-logc3-encoding)
+      - [ARRI LogC3 colorchecker - EXR 2K LogC3 encoding](#arri-logc3-colorchecker---exr-2k-logc3-encoding)
   - [References](#references)
   - [Web Resources](#web-resources)
 
@@ -93,19 +94,17 @@ For added convenience, the run.py script is provided, enabling easy access to va
 
 All DCTLs are tested and confirmed to work with Metal, CUDA, and OpenCL on both Mac and Windows platforms.
 
-# DCTL reference
+## Verified DCTLs
 
-## Cineon color processing
+### Cineon color processing
 
-### MS-Cineon-Exposure.dctl
+#### Cineon exposure
 
 ![MS-Cineon-Exposure figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure.dctl")
 
 Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
-
-### MS-Cineon-Invert.dctl
 
 #### Cineon inversion
 
@@ -124,37 +123,21 @@ Figure: Color calibration curves and macbeth charts at different exposures for a
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
 - https://github.com/AcademySoftwareFoundation/rawtoaces
 
-### MS-Cineon-Exposure.dctl
+#### Cineon exposure
 
 Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
 
-### MS-Cineon-Transform.dctl
+#### Cineon transform
 
 Cineon conversion to and from linear. 
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
 
-## Gen5 color processing
+### ARRI LogC color processing
 
-### MS-Gen5-Transform.dctl
-
-Gen5 conversion to and from linear. 
-
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Gen5-Transform.dctl
-
-## LogC3 color processing
-
-### MS-LogC3-Print.dctl
-
-![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
-
-Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for luminosity and color blending.
-
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
-
-### MS-LogC3-Exposure.dctl
+#### LogC3 exposure
 
 ![MS-LogC3-Exposure.dctl figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure.dctl")
 
@@ -162,71 +145,89 @@ LogC3 exposure from photographic stops, incorporating a zone based false color t
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
 
-### MS-LogC3-Temperature.dctl
+#### LogC3 print
 
-LogC3 CAT02 color temperature adjustments.
+![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Temperature.dctl
+Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for luminosity and color blending.
 
-### MS-LogC3-Transform.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
+
+#### LogC3 transform
 
 LogC3 conversion to and from linear. 
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Transform.dctl
 
-## Utility DCTLs
+### Blackmagic LogC color processing
 
-### MS-Grade.dctl
+#### Gen5 transform
 
-Grade adjustments, this DCTL is experimental code for lift, gamma, gain and log controls.
+Blackmagic Gen5 conversion to and from linear. 
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Grade.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Gen5-Transform.dctl
 
-### MS-Stripify.dctl
+### Utilities
+
+#### Stripify
 
 Matrix adjustments, this DCTL simplifies the color palette by pushing colors into a warm and cool strip.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
 
-### MS-Saturation.dctl
+#### Saturation
 
 HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation using saturation in HSV.
 
 - https://github.com/mikaelsundell/dctl/blob/master/MS-Saturation.dctl
 
+## Experimental DCTLs
+
+#### LogC3 temperature
+
+LogC3 CAT02 color temperature adjustments.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Temperature.dctl
+
+#### Grade
+
+Grade adjustments, this DCTL is experimental code for lift, gamma, gain and log controls.
+
+- https://github.com/mikaelsundell/dctl/blob/master/MS-Grade.dctl
+
 ## DCTLs from other projects
 
-### Printer Lights.dctl
+#### Printer Lights
 
 - https://github.com/thatcherfreeman/utility-dctls/blob/main/Utilities/Printer%20Lights.dctl
 
-### TetraInterp.dctl
+#### TetraInterp
 
 -  https://github.com/hotgluebanjo/TetraInterp-DCTL/blob/master/TetraInterp.dctl
 
-### TetraInterpHSV.dctl
+#### TetraInterpHSV
 
 - https://github.com/hotgluebanjo/TetraInterp-DCTL/blob/master/TetraInterpHSV.dctl
 
 ## Reference charts
 
-### Reference charts for testing and verifying DCTLs. Additional formats are available in the Logctool project README:
+Reference charts for testing and verifying DCTLs. Additional formats are available in the Logctool project README:
 
 - https://github.com/mikaelsundell/logctool
 
-### ACES Macbeth 50D 5203 EXR from rawtoaces
+#### ACES Macbeth 50D 5203 EXR from rawtoaces
 
 ![logctool_LogC3_DCI_2K figure](resources/macbeth_50D_5203.png "Macbeth 50D 5203 EXR")
 
 - Download: [macbeth_50D_5203.exr](resources/macbeth_50D_5203.exr)
 
-### ARRI LogC3 stepchart - EXR 2K LogC3 encoding 
+#### ARRI LogC3 stepchart - EXR 2K LogC3 encoding 
 
 ![llogctool_LogC3_stepchart_DCI_2K figure](resources/logctool_LogC3_stepchart_DCI_2K.png "ARRI LogC3 10-bit DPX")
 
 - Download: [logctool_LogC3_stepchart_DCI_2K.exr](https://mikaelsundell.s3.eu-west-1.amazonaws.com/github/logctool/logctool_LogC3_stepchart_DCI_2K.exr)
 
-### ARRI LogC3 colorchecker - EXR 2K LogC3 encoding 
+#### ARRI LogC3 colorchecker - EXR 2K LogC3 encoding 
 
 ![logctool_LogC3_colorchecker_DCI_2K figure](resources/logctool_LogC3_colorchecker_DCI_2K.png "Cineon 10-bit DPX")
 

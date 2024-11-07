@@ -23,8 +23,8 @@ DEFINE_UI_PARAMS(dminmethod, Dmin method, DCTLUI_COMBO_BOX, 0, {DMINRGB, SAMPLER
 DEFINE_UI_PARAMS(samplercolor, Sampler color, DCTLUI_COMBO_BOX, 0, {WHITE, BLACK, RED, GREEN, BLUE}, {White, Black, Red, Green, Blue})
 
 // headers
-#include "MS-Common.h"
-#include "MS-Cineon.h"
+#include "PD-Common.h"
+#include "PD-Cineon.h"
 
 __DEVICE__ inline float3 pixel(__TEXTURE__ p_TexR, __TEXTURE__ p_TexG, __TEXTURE__ p_TexB, int p_X, int p_Y)
 {
@@ -70,14 +70,14 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, __TEXTU
 
     }
     float3 scale = make_float3(scalex, scaley, scalez);
-    struct CineonCurve cv;
+    struct CineonCurve cv = cineon_curve();
     cv.density = density;
     cv.bitdepth = bitdepth;
     cv.offset = offset;
     if (cineonmethod == INVERSE) {
-        rgb = invert_cineon(rgb, scale, dmin);
+        rgb = CineonCurve_invert_cineon(cv, rgb, scale, dmin);
     } else {
-        rgb = reverse_cineon(rgb, scale, dmin);
+        rgb = CineonCurve_reverse_cineon(cv, rgb, scale, dmin);
     }
     if (adjustdisplay) {
         rgb = adjust_display(rgb);

@@ -26,7 +26,7 @@ DEFINE_UI_PARAMS(gamma_g, Gamma G, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
 DEFINE_UI_PARAMS(gamma_b, Gamma B, DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0, 0.01);
 
 // headers
-#include "MS-Common.h"
+#include "PD-Common.h"
 
 // Grade
 struct Grade
