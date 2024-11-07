@@ -100,15 +100,15 @@ All DCTLs are tested and confirmed to work with Metal, CUDA, and OpenCL on both 
 
 #### Cineon exposure
 
-![MS-Cineon-Exposure figure](resources/MS-Cineon-Exposure.png "MS-Cineon-Exposure.dctl")
+![PD-Cineon-Exposure figure](resources/PD-Cineon-Exposure.png "PD-Cineon-Exposure.dctl")
 
 Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Cineon-Exposure.dctl
 
 #### Cineon inversion
 
-![MS-Cineon-Invert.dctl figure](resources/MS-Cineon-Invert.png "MS-Cineon-Invert.dctl")
+![PD-Cineon-Invert.dctl figure](resources/PD-Cineon-Invert.png "PD-Cineon-Invert.dctl")
 
 Cineon negative inversion with precise control over the dmin ratio based inversion process using adjustable parameters such as density, bit depth, offset, and density scale. You can specify dmin base values manually as floating-point numbers (obtained from tools like Pixel Analyzer in Nuke or similar software) or sample them using a rectangular sampler from the border or other dmin base areas.
 
@@ -116,48 +116,48 @@ Cineon negative inversion with precise control over the dmin ratio based inversi
 
 To account for the variations of film stock and the use of ECN-2 chemicals, developer time and temperature, camera and lightbox settings - calibration curves are applied to match ideal cineon code values. In this example, photoscanning was used along with the rawtoaces tool to convert the Camera RAW CR2 file to scene-linear ACES, starting with as much information as possible. However, because the science is not exact, manual tweaking using density scaling and calibration curves is needed depending on the setup.
 
-![MS-Cineon-Invert.dctl figure](resources/MS-LogC3-Invert_calibration.png "MS-Cineon-Invert.dctl")
+![PD-Cineon-Invert.dctl figure](resources/PD-LogC3-Invert_calibration.png "PD-Cineon-Invert.dctl")
 
 Figure: Color calibration curves and macbeth charts at different exposures for adjustments.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Invert.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Cineon-Invert.dctl
 - https://github.com/AcademySoftwareFoundation/rawtoaces
 
 #### Cineon exposure
 
 Cineon exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Exposure.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Cineon-Exposure.dctl
 
 #### Cineon transform
 
 Cineon conversion to and from linear. 
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Cineon-Transform.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Cineon-Transform.dctl
 
 ### ARRI LogC color processing
 
 #### LogC3 exposure
 
-![MS-LogC3-Exposure.dctl figure](resources/MS-LogC3-Exposure.png "MS-LogC3-Exposure.dctl")
+![PD-LogC3-Exposure.dctl figure](resources/PD-LogC3-Exposure.png "PD-LogC3-Exposure.dctl")
 
 LogC3 exposure from photographic stops, incorporating a zone based false color to aid in achieving correct exposure levels.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Exposure.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-LogC3-Exposure.dctl
 
 #### LogC3 print
 
-![MS-LogC3-Print.dctl figure](resources/MS-LogC3-Print.png "MS-LogC3-Print.dctl")
+![PD-LogC3-Print.dctl figure](resources/PD-LogC3-Print.png "PD-LogC3-Print.dctl")
 
 Made for print emulation, this DCTL applies DaVinci Resolve's built-in film looks to ARRI LogC3 and Cineon footage with adjustable controls for luminosity and color blending.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Print.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-LogC3-Print.dctl
 
 #### LogC3 transform
 
 LogC3 conversion to and from linear. 
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Transform.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-LogC3-Transform.dctl
 
 ### Blackmagic LogC color processing
 
@@ -165,7 +165,7 @@ LogC3 conversion to and from linear.
 
 Blackmagic Gen5 conversion to and from linear. 
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Gen5-Transform.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Gen5-Transform.dctl
 
 ### Utilities
 
@@ -173,13 +173,13 @@ Blackmagic Gen5 conversion to and from linear.
 
 Matrix adjustments, this DCTL simplifies the color palette by pushing colors into a warm and cool strip.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Stripify.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Stripify.dctl
 
 #### Saturation
 
 HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation using saturation in HSV.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Saturation.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Saturation.dctl
 
 ## Experimental DCTLs
 
@@ -187,13 +187,13 @@ HSV-based adjustments, this DCTL provides a tool for fine-tuning saturation usin
 
 LogC3 CAT02 color temperature adjustments.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-LogC3-Temperature.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-LogC3-Temperature.dctl
 
 #### Grade
 
 Grade adjustments, this DCTL is experimental code for lift, gamma, gain and log controls.
 
-- https://github.com/mikaelsundell/dctl/blob/master/MS-Grade.dctl
+- https://github.com/mikaelsundell/dctl/blob/master/PD-Grade.dctl
 
 ## DCTLs from other projects
 
