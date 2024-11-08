@@ -5,7 +5,7 @@
 - [Photographic DCTLs](#photographic-dctls)
   - [Introduction](#introduction)
   - [Installation and utils](#installation-and-utils)
-    - [To open the DCTL readme documentation, use:](#to-open-the-dctl-readme-documentation-use)
+    - [The run.py script](#the-runpy-script)
     - [Quick install for Windows users](#quick-install-for-windows-users)
     - [DCTL compatibility](#dctl-compatibility)
   - [Verified DCTLs](#verified-dctls)
@@ -19,7 +19,7 @@
       - [LogC3 exposure](#logc3-exposure)
       - [LogC3 print](#logc3-print)
       - [LogC3 transform](#logc3-transform)
-    - [Blackmagic LogC color processing](#blackmagic-logc-color-processing)
+    - [Blackmagic color processing](#blackmagic-color-processing)
       - [Gen5 transform](#gen5-transform)
     - [Utilities](#utilities)
       - [Stripify](#stripify)
@@ -52,21 +52,23 @@ To use these tools into your DaVinci Resolve setup, begin by cloning the git rep
 
 Run `python(.exe) run.py install` in your terminal to copy the `*.dctl` and `*.h` files to the DaVinci Resolve LUT DCTL folder, ensuring they're accessible within your Resolve environment. The files can also be manually copied to `/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/DCTL` on Mac and `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\DCTL`on Windows.
 
-For added convenience, the run.py script is provided, enabling easy access to various resources:
+For added convenience, the run.py script is provided, enabling easy access to various resources.
 
-### To open the DCTL readme documentation, use:
+### The run.py script
+
+**To open the DCTL readme documentation:**
 
 ```shell
 ./run.py readme
 ````
 
-**For exploring DCTL examples, execute:**
+**For exploring DCTL examples:**
 
 ```shell
 ./run.py examples
 ````
 
-**To access the DaVinci Resolve log file and initiate a trace, input:**
+**To access the DaVinci Resolve log file and initiate a trace:**
 
 ```shell
 ./run.py install
@@ -78,7 +80,7 @@ For added convenience, the run.py script is provided, enabling easy access to va
 ./run.py log
 ````
 
-**To make a snapshot of hte DaVinvi Resolve DCTL folder, input:**
+**To make a snapshot of hte DaVinvi Resolve DCTL folder:**
 
 ```shell
 ./run.py snapshot
@@ -159,7 +161,7 @@ LogC3 conversion to and from linear.
 
 - https://github.com/mikaelsundell/dctl/blob/master/PD-LogC3-Transform.dctl
 
-### Blackmagic LogC color processing
+### Blackmagic color processing
 
 #### Gen5 transform
 
