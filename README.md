@@ -56,35 +56,35 @@ For added convenience, the run.py script is provided, enabling easy access to va
 
 ### The run.py script
 
-**To open the DCTL readme documentation:**
+__To open the DCTL readme documentation:__
 
 ```shell
 ./run.py readme
-````
+```
 
-**For exploring DCTL examples:**
+__For exploring DCTL examples:__
 
 ```shell
 ./run.py examples
-````
+```
 
-**To access the DaVinci Resolve log file and initiate a trace:**
+__To access the DaVinci Resolve log file and initiate a trace:__
 
 ```shell
 ./run.py install
-````
+```
 
-**To install *.dctl and *.h into DCTL directory:**
+__To install *.dctl and *.h into DCTL directory:__
 
 ```shell
 ./run.py log
-````
+```
 
-**To make a snapshot of hte DaVinvi Resolve DCTL folder:**
+__To make a snapshot of hte DaVinvi Resolve DCTL folder:__
 
 ```shell
 ./run.py snapshot
-````
+```
 
 ### Quick install for Windows users
 
@@ -239,21 +239,32 @@ Reference charts for testing and verifying DCTLs. Additional formats are availab
 References
 ---------
 
-ARRI Companion to DI
+**ARRI Companion to DI**
 * https://dicomp.arri.de/digital/digital_systems/DIcompanion/index.html
   
-Blend modes:
-* https://skia.googlesource.com/skia/+/70e432e72745/gm/hsl.cpp
+**Grayscale legacy luma**
+* https://en.wikipedia.org/wiki/Grayscale
 
-Cineon conversion in RV:
+**Tonal curves in Desmos graph calculator**
+* https://www.desmos.com/calculator
+* https://www.desmos.com/calculator/3zhzwbfrxd
+
+**Matrix calculator**
+* https://www.russellcottrell.com/photo/matrixCalculator.htm
+
+**Wikipedia**
+* https://en.wikipedia.org/wiki/Rec._709
+* https://en.wikipedia.org/wiki/DCI-P3
+
+**Digital cinema initiatives, LLC**
+* http://www.dcimovies.com/archives/spec_v1_1/DCI_DCinema_System_Spec_v1_1.pdf
+
+**Formats in RV**
 * https://github.com/AcademySoftwareFoundation/OpenRV/blob/main/src/plugins/rv-packages/additional_nodes/LinearToCineonLog.glsl
 * https://github.com/AcademySoftwareFoundation/OpenRV/blob/main/src/plugins/rv-packages/additional_nodes/CineonLogToLinear.glsl
 
-Grayscale legacy luma:
-* https://en.wikipedia.org/wiki/Grayscale
-
-Tonal curves in Desmos graph calculator:
-* https://www.desmos.com/calculator/3zhzwbfrxd
+**Blend modes**
+* https://skia.googlesource.com/skia/+/70e432e72745/gm/hsl.cpp
 
  Web Resources
 -------------

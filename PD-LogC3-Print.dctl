@@ -4,13 +4,13 @@
 
 // clang-format on
 DEFINE_UI_PARAMS(ei, LogC3 EI, DCTLUI_COMBO_BOX, 7, {EI160, EI200, EI250, EI320, EI400, EI500, EI640, EI800, EI1000, EI1280, EI1600}, {EI 160, EI 200, EI 250, EI 320, EI 400, EI 500, EI 640, EI 800, EI 1000, EI 1280, EI 1600});
-DEFINE_UI_PARAMS(luminositylut, Film luminosity, DCTLUI_COMBO_BOX, 0, {LUMINOSITYLUT0, LUMINOSITYLUT1, LUMINOSITYLUT2, LUMINOSITYLUT3, LUMINOSITYLUT4, LUMINOSITYLUT5, LUMINOSITYLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
-DEFINE_UI_PARAMS(colorlut, Film color, DCTLUI_COMBO_BOX, 0, {COLORLUT0, COLORLUT1, COLORLUT2, COLORLUT3, COLORLUT4, COLORLUT5, COLORLUT6}, {Rec709 Fujifilm 3513DI D55, Rec709 Fujifilm 3513DI D60, Rec709 Fujifilm 3513DI D65, Rec709 Kodak 2383 D55, Rec709 Kodak 2383 D60, Rec709 Kodak 2383 D65, ARRI LogC2Video});
-DEFINE_UI_PARAMS(display, Display, DCTLUI_COMBO_BOX, 0, {REC709, DCIP3}, {Rec709 Gamma2.6, DCI-P3 Gamma 2.6});
+DEFINE_UI_PARAMS(luminositylut, Film luminosity, DCTLUI_COMBO_BOX, 0, {LUMINOSITYLUT0, LUMINOSITYLUT1, LUMINOSITYLUT2, LUMINOSITYLUT3, LUMINOSITYLUT4, LUMINOSITYLUT5, LUMINOSITYLUT6}, {Fujifilm 3513DI D55, Fujifilm 3513DI D60, Fujifilm 3513DI D65, Kodak 2383 D55, Kodak 2383 D60, Kodak 2383 D65, ARRI LogC2Video});
+DEFINE_UI_PARAMS(colorlut, Film color, DCTLUI_COMBO_BOX, 0, {COLORLUT0, COLORLUT1, COLORLUT2, COLORLUT3, COLORLUT4, COLORLUT5, COLORLUT6}, {Fujifilm 3513DI D55, Fujifilm 3513DI D60, Fujifilm 3513DI D65, Kodak 2383 D55, Kodak 2383 D60, Kodak 2383 D65, ARRI LogC2Video});
+DEFINE_UI_PARAMS(display, Display, DCTLUI_COMBO_BOX, 0, {REC709, DCIP3}, {Rec709/Gamma2.2, DCI-P3/Gamma2.6});
 DEFINE_UI_PARAMS(luminosityblend, Luminosity blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(colorblend, Color blend, DCTLUI_SLIDER_FLOAT, 0, 0, 100, 1);
 DEFINE_UI_PARAMS(convertcineon, Convert to cineon, DCTLUI_CHECK_BOX, 1)
-DEFINE_UI_PARAMS(convertrec709, Convert to rec709, DCTLUI_CHECK_BOX, 1)
+DEFINE_UI_PARAMS(convertcolorspace, Convert colorspace, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(adjustdisplay, Adjust for display, DCTLUI_CHECK_BOX, 0)
 
 DEFINE_LUT(LUT0_REC709, ../Film Looks/Rec709 Fujifilm 3513DI D55.cube)
@@ -33,12 +33,18 @@ DEFINE_LUT(LUT6_DCIP3, ./ARRI_LogC2Video_P3DCI_davinci3d_33.cube)
 #include "PD-LogC3.h"
 #include "PD-Cineon.h"
 #include "PD-Rec709.h"
+#include "PD-DCIP3.h"
 
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
 {
     float3 rgb = make_float3(p_R, p_G, p_B);
-    if (convertrec709) {
-        rgb = lin_logC3(xyz_rec709(logC3_xyz(logC3_lin(rgb, ei))), ei);
+    if (convertcolorspace) {
+        if (display == REC709) {
+            rgb = lin_logC3(xyz_rec709(logC3_xyz(logC3_lin(rgb, ei))), ei);
+        }
+        else {
+            rgb = lin_logC3(xyz_dcip3(logC3_xyz(logC3_lin(rgb, ei))), ei);
+        }
     }
     if (convertcineon) {
         rgb = lin_cineon(logC3_lin(rgb, ei));
@@ -54,7 +60,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
             case LUMINOSITYLUT5: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_REC709); break;
             case LUMINOSITYLUT6: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_REC709); break;
         }
-    } else {
+    }
+    else {
         switch (luminositylut) {
             case LUMINOSITYLUT0: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_DCIP3); break;
             case LUMINOSITYLUT1: luminosity = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_DCIP3); break;
@@ -76,7 +83,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
             case COLORLUT5: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT5_REC709); break;
             case COLORLUT6: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT6_REC709); break;
         }
-    } else {
+    }
+    else {
         switch (colorlut) {
             case COLORLUT0: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT0_DCIP3); break;
             case COLORLUT1: color = APPLY_LUT(rgb.x, rgb.y, rgb.z, LUT1_DCIP3); break;

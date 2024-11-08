@@ -15,11 +15,11 @@ struct Rec709Curve
 };
 
 __DEVICE__ float Rec709Curve_lin_rec709(struct Rec709Curve cv, float lin) {
-    return (lin < cv.threshold) ? cv.slope * lin : cv.scale * pow_f(lin, cv.exp) - cv.offset;
+    return (lin < cv.threshold) ? (lin * cv.slope) : (cv.scale * pow_f(lin, cv.exp) - cv.offset);
 }
 
 __DEVICE__ float Rec709Curve_rec709_lin(struct Rec709Curve cv, float val) {
-    return (val < cv.offset * cv.slope) ? val / cv.slope : pow_f((val + cv.offset) / cv.scale, 1.0 / cv.exp);
+    return (val < Rec709Curve_lin_rec709(cv, cv.threshold)) ? (val / cv.slope) : pow_f((val + cv.offset) / cv.scale, 1.0 / cv.exp);
 }
 
 // rec709 colorspace
@@ -36,11 +36,11 @@ __DEVICE__ float3 Rec709Colorspace_rec709_xyz(struct Rec709Colorspace cs, float3
     return mult_matrix(rec709, cs.xyz_matrix);
 }
 
-__DEVICE__ struct Rec709Curve rec709_curve(int ei) {
+__DEVICE__ struct Rec709Curve rec709_curve() {
     struct Rec709Curve cv;
     cv.threshold = 0.018;
     cv.slope = 4.5;
-    cv.exp = 0.45;
+    cv.exp = 1.0 / 2.2;
     cv.scale = 1.099;
     cv.offset = 0.099;
     return cv;
@@ -60,14 +60,14 @@ __DEVICE__ struct Rec709Colorspace rec709_colorspace() {
 }
 
 // convert linear to Rec709
-__DEVICE__ float3 lin_rec709(float3 rgb, int ei) {
-    struct Rec709Curve cv = rec709_curve(ei);
+__DEVICE__ float3 lin_rec709(float3 rgb) {
+    struct Rec709Curve cv = rec709_curve();
     return make_float3(Rec709Curve_lin_rec709(cv, rgb.x), Rec709Curve_lin_rec709(cv, rgb.y), Rec709Curve_lin_rec709(cv, rgb.z));
 }
 
 // convert Rec709 to linear
-__DEVICE__ float3 rec709_lin(float3 rgb, int ei) {
-    struct Rec709Curve cv = rec709_curve(ei);
+__DEVICE__ float3 rec709_lin(float3 rgb) {
+    struct Rec709Curve cv = rec709_curve();
     return make_float3(Rec709Curve_rec709_lin(cv, rgb.x), Rec709Curve_rec709_lin(cv, rgb.y), Rec709Curve_rec709_lin(cv, rgb.z));
 }    
 
