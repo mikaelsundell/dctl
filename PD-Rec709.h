@@ -59,26 +59,26 @@ __DEVICE__ struct Rec709Colorspace rec709_colorspace() {
     return cs;
 }
 
-// convert linear to Rec709
+// convert linear to rec709
 __DEVICE__ float3 lin_rec709(float3 rgb) {
     struct Rec709Curve cv = rec709_curve();
     return make_float3(Rec709Curve_lin_rec709(cv, rgb.x), Rec709Curve_lin_rec709(cv, rgb.y), Rec709Curve_lin_rec709(cv, rgb.z));
 }
 
-// convert Rec709 to linear
+// convert rec709 to linear
 __DEVICE__ float3 rec709_lin(float3 rgb) {
     struct Rec709Curve cv = rec709_curve();
     return make_float3(Rec709Curve_rec709_lin(cv, rgb.x), Rec709Curve_rec709_lin(cv, rgb.y), Rec709Curve_rec709_lin(cv, rgb.z));
 }    
 
-// convert Rec709 to xyz
+// convert rec709 to xyz
 __DEVICE__ float3 xyz_rec709(float3 rgb) {
     struct Rec709Colorspace cs = rec709_colorspace();
     float3 rec709 = Rec709Colorspace_xyz_rec709(cs, rgb);
     return rec709;
 }
 
-// convert xyz to Rec709
+// convert xyz to rec709
 __DEVICE__ float3 rec709_xyz(float3 rgb) {
     struct Rec709Colorspace cs = rec709_colorspace();
     return Rec709Colorspace_rec709_xyz(cs, rgb);
